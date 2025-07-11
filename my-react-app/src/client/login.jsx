@@ -1,16 +1,25 @@
 import logo from '../assets/logo.png';
 import {useState} from "react";
 // import { Link } from 'react-router-dom';
-
+import axios from 'axios';
 
 
 export default function Login(){
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	function handlelogin() {
+	const handlelogin = async () =>{
 		//send the data to backend
-
+		try {
+			const res = await axios.post('http://localhost:5174/login', {
+				email,
+				password
+			});
+		} catch (error) {
+			
+			console.error("Login failed:", error);
+			alert("Login failed. Please try again.");
+		}
 	}
 
 	return (
