@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import logo from '../assets/logo.png';
 import {useState} from "react";
 // import { Link } from 'react-router-dom';
@@ -10,8 +11,10 @@ export default function Login(){
 
 	const handlelogin = async () =>{
 		//send the data to backend
+		let response;
+
 		try {
-			const res = await axios.post('http://localhost:5174/login', {
+			response = await axios.post('http://localhost:5174/login', {
 				email,
 				password
 			});

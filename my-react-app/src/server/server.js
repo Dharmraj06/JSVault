@@ -1,14 +1,20 @@
 import express from 'express';
 import {connectDB} from './db.js';
 import User from './model/user.js';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
 const port = 5174;
 
 connectDB();
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow only your frontend origin
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true
+}));
 
 let loggedIn = null;
 
@@ -25,11 +31,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('/client/public'));
 
-// app.get("/login", (req, res) => {
-//     User.create(req.body);
-// })
+app.get("/login", (req, res) => {
+    if (loggedIn) {
+        res.redirect("/dashboard");
+    } else {
+        res.sendFile('login.html', { root: './client/public' });
+    }
+})
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     const {email, password} = req.body;
 
     //checking in the DB that this user exists
