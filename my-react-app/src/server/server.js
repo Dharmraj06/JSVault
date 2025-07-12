@@ -1,8 +1,8 @@
 import express from 'express';
 import {connectDB} from './db.js';
 import User from './model/user.js';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
@@ -22,21 +22,45 @@ app.get("/", (req, res) => {
 );  
 
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('/client/public'));
 
-// app.get("/login", (req, res) => {
-//     User.create(req.body);
-// })
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow only your frontend origin
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true
+}));
 
-app.post("/login", (req, res) => {
+
+app.get("/login", (req, res) => {
+    if (loggedIn) {
+        res.redirect("/dashboard");
+    } else {
+        res.sendFile('index.html', {root: 'C:\\Users\\vaghe\\OneDrive\\Desktop\\Coding\\Development\\JS-MERN\\JSVault\\my-react-app'});
+    }
+})
+
+app.post("/login", async (req, res) => {
     const {email, password} = req.body;
 
     //checking in the DB that this user exists
     if (email && password) {
-        if(User.findOne({email, password})){
-            loggedIn = true;
-            res.status(200).json({message: "Login successful", email});
+        try {
+            const user = await User.findOne({email, password});
+            console.log("User found:", user);
+            if(user) {
+                loggedIn = user;
+                res.status(200).json({message: "Login successful", user});
+                console.log("User logged in:", user.email);
+            } else {
+                res.status(401).json({message: "Invalid email or password"});
+            }
+
+        } catch (error) {
+
+            res.status(500).json({message: "Internal server error"});
+            console.error("Error during login:", error);
         }
     } else {
         res.status(400).json({message: "Invalid email or password"});
