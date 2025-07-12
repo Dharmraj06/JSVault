@@ -34,8 +34,10 @@ app.post("/login", (req, res) => {
 
     //checking in the DB that this user exists
     if (email && password) {
-        
-        res.status(200).json({message: "Login successful", email});
+        if(User.findOne({email, password})){
+            loggedIn = true;
+            res.status(200).json({message: "Login successful", email});
+        }
     } else {
         res.status(400).json({message: "Invalid email or password"});
     }
@@ -45,7 +47,7 @@ app.post("/login", (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
-    console.log(User.find());
+    // console.log(User.find());
 });
 
 
