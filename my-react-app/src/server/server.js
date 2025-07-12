@@ -11,9 +11,8 @@ const port = 5174;
 connectDB();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow only your frontend origin
-  methods: ['GET', 'POST', 'OPTIONS'],
-  credentials: true
+  origin: 'http://localhost:5173',   // your frontend origin
+  credentials: true                  // allow credentials
 }));
 
 let loggedIn = null;
@@ -25,6 +24,7 @@ app.get("/", (req, res) => {
         res.redirect("/login");
     }
 }
+
 );  
 
 app.use(express.json());
