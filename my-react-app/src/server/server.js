@@ -1,6 +1,6 @@
 import express from 'express';
 import {connectDB} from './db.js';
-import User from './models/User.js';
+import User from './model/user.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
