@@ -1,8 +1,8 @@
 import express from 'express';
 import {connectDB} from './db.js';
 import User from './model/user.js';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import cors from 'cors';
 
 dotenv.config();
 const app = express();
@@ -22,26 +22,14 @@ app.get("/", (req, res) => {
 );  
 
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('/client/public'));
 
-app.use(cors({
-  origin: 'http://localhost:5173', // Allow only your frontend origin
-  methods: ['GET', 'POST', 'OPTIONS'],
-  credentials: true
-}));
+// app.get("/login", (req, res) => {
+//     User.create(req.body);
+// })
 
-
-app.get("/login", (req, res) => {
-    if (loggedIn) {
-        res.redirect("/dashboard");
-    } else {
-        res.sendFile('index.html', {root: 'C:\\Users\\vaghe\\OneDrive\\Desktop\\Coding\\Development\\JS-MERN\\JSVault\\my-react-app'});
-    }
-})
-
-app.post("/login", async (req, res) => {
+app.post("/login", (req, res) => {
     const {email, password} = req.body;
 
     //checking in the DB that this user exists
