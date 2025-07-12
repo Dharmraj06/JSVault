@@ -47,7 +47,7 @@ app.post("/login", async (req, res) => {
     //checking in the DB that this user exists
     if (email && password) {
         try {
-            const user = await User.findOne({email, password});
+            const user = await User.findOne({email: email.trim(), password: password.trim()});
             console.log("User found:", user);
             if(user) {
                 loggedIn = user;
