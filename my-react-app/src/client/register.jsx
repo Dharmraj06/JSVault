@@ -14,7 +14,7 @@ export default function Register(){
         let response;
 
 		try {
-			response = await axios.post('http://localhost:5174/register', {
+			response = await axios.post("http://localhost:5174/register", {
                 name,
 				email,
 				password

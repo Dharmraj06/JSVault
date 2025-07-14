@@ -5,8 +5,8 @@ import Register from '../client/register.jsx'
 function App() {
 	return (
 		<>
-			{/* <Login /> */}
-			<Register />
+			<Login />
+			{/* <Register /> */}
 		</>
 	)
 }

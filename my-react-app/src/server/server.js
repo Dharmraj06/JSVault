@@ -1,6 +1,6 @@
 import express from 'express';
 import {connectDB} from './db.js';
-import User from './model/user.js';
+import newUser from './model/user.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
@@ -11,8 +11,8 @@ const port = 5174;
 connectDB();
 
 app.use(cors({
-  origin: 'http://localhost:5173',   // your frontend origin
-  credentials: true                  // allow credentials
+  origin: 'http://localhost:5173',
+  credentials: true
 }));
 
 let loggedIn = null;
@@ -45,7 +45,7 @@ app.post("/login", async (req, res) => {
     //checking in the DB that this user exists
     if (email && password) {
         try {
-            const user = await User.findOne({email: email.trim(), password: password.trim()});
+            const user = await newUser.findOne({email: email.trim(), password: password.trim()});
             console.log("User found:", user);
             if(user) {
                 loggedIn = user;
@@ -66,6 +66,18 @@ app.post("/login", async (req, res) => {
 
 });
 
+app.post('/register', async (req, res) => {
+    const {name, email, password} = req.body;
+
+    try {
+        const user = await newUser.create({name, email, password});
+        console.log("User registered:", user);
+        res.status(201).json({message: "Registration successful", user});
+    } catch (error) {
+        console.error("Error during registration:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
