@@ -11,8 +11,8 @@ const port = 5174;
 connectDB();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
+  origin: 'http://localhost:5173',   
+  credentials: true                 
 }));
 
 let loggedIn = null;
