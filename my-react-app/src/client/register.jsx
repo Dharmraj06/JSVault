@@ -3,7 +3,7 @@ import logo from '../assets/logo.png';
 import {useState} from "react";
 // import { Link } from 'react-router-dom';
 import axios from 'axios';
-
+import {Link} from 'react-router-dom';
 
 export default function Register(){
     const [name, setName] = useState('');
@@ -78,9 +78,9 @@ export default function Register(){
 
 			<div className="createAccount">
 				<h1>Already have an account?</h1>
-				<link to="/login" className="button lite">
+				<Link to="/login" className="button lite">
 					Create an Account
-					</link>
+					</Link>
 				{/* <button className="button lite">Login to your Account</button> */}
 				
 			</div>
