@@ -83,7 +83,10 @@ export default function Login() {
 
       <div className="createAccount">
         <h1>Don't have an account?</h1>
-        <button className="button lite">Create an Account</button>
+        <link to="/register" className="button lite">
+          Create an Account
+          </link>
+        {/* //<button className="button lite">Create an Account</button> */}
       </div>
 
       <div className="footer">

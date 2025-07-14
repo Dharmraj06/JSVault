@@ -78,7 +78,11 @@ export default function Register(){
 
 			<div className="createAccount">
 				<h1>Already have an account?</h1>
-				<button className="button lite">Login to your Account</button>
+				<link to="/login" className="button lite">
+					Create an Account
+					</link>
+				{/* <button className="button lite">Login to your Account</button> */}
+				
 			</div>
 
 			<div className="footer">
