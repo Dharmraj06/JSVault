@@ -6,6 +6,7 @@ import Navbar from '../client/navbar.jsx';
 import Dashboard from '../client/dashboard.jsx';
 import React from 'react';
 import Footer from '../client/footer.jsx';
+import NewNote from '../client/newNote.jsx';
 function App() {
 	return (
 		<BrowserRouter>
@@ -14,6 +15,7 @@ function App() {
 				<Route path="/" element={<Login />} /> /* Main login page */
 				<Route path="/dashboard" element={<Dashboard />} /> /*
 				<Route path="/register" element={<Register />} />
+				<Route path="/newNote" element={<NewNote />} /> /* Page to create a new note */
 			</Routes>
 		<Footer />
 		</BrowserRouter>

@@ -15,7 +15,7 @@ export default function Navbar() {
                         <Link to="/dashboard">Home</Link>
                     </li>
                     <li>
-                        <Link to="/register">Register</Link>
+                        <Link to="/newNote">New Note</Link>
                     </li>
                     <li>
                         <Link to="/">Login</Link>
