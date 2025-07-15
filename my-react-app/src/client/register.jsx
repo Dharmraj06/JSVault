@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import logo from '../assets/logo.png';
 import {useState} from "react";
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -78,7 +78,9 @@ export default function Register(){
 
 			<div className="createAccount">
 				<h1>Already have an account?</h1>
-				<button className="button lite">Login to your Account</button>
+				<Link to="/" className="button lite">
+					Login to your account
+				</Link>
 			</div>
 
 			<div className="footer">
