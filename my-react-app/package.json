@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "dev": "nodemon C:\\Users\\user\\Desktop\\JSVault\\JSVault\\my-react-app\\src\\server\\server.js",
+    "dev": "nodemon C:\\Users\\vaghe\\OneDrive\\Desktop\\Coding\\Development\\JS-MERN\\JSVault\\my-react-app\\src\\server\\server.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

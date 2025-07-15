@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import logo from "../assets/logo.png";
 import { useState } from "react";
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from "axios";
 
 export default function Login() {
@@ -83,7 +83,9 @@ export default function Login() {
 
       <div className="createAccount">
         <h1>Don't have an account?</h1>
-        <button className="button lite">Create an Account</button>
+        <Link to="/register" className="button lite">
+          Create an Account</Link>
+        {/* <button className="button lite">Create an Account</button> */}
       </div>
 
       <div className="footer">
