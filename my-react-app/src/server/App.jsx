@@ -4,7 +4,6 @@ import Register from '../client/register.jsx'
 import {BrowserRouter,Routes,Route, Link} from "react-router-dom";
 import Navbar from '../client/navbar.jsx';
 import Dashboard from '../client/dashboard.jsx';
-import NewNote from '../client/newNote.jsx';
 import React from 'react';
 import Footer from '../client/footer.jsx';
 import NewNote from '../client/newNote.jsx';

@@ -3,6 +3,7 @@ import {connectDB} from './db.js';
 import newUser from './model/user.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import Note from './model/note.js';
 
 dotenv.config();
 const app = express();
@@ -75,6 +76,22 @@ app.post('/register', async (req, res) => {
         res.status(201).json({message: "Registration successful", user});
     } catch (error) {
         console.error("Error during registration:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+});
+
+app.post('/newNote', async (req, res) => {
+    console.log("Received new note request:");
+    const {title, language, tags, code, codeDetails} = req.body;
+    if (!title || !language || !tags || !code || !codeDetails) {
+        return res.status(400).json({message: "All fields are required"});
+    }
+    try {
+        const note = await Note.create({userId: "6874e411349ad1a4aed681ee", title, language, tags, isArchived: false, code, codeDetails});
+        console.log("Note created:", note);
+        res.status(201).json({message: "Note created successfully", note});
+    } catch (error) {
+        console.error("Error during note creation:", error);
         res.status(500).json({message: "Internal server error"});
     }
 });
