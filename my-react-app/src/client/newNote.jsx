@@ -1,12 +1,9 @@
 import react from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from './navbar';
-import Footer from './footer';
 
 export default function NewNote() {
     return (
         <>
-            <Navbar />
             <div className="container">
                 <h1>Create a New Note</h1>
                 <form>
@@ -59,7 +56,7 @@ export default function NewNote() {
                     
                 </form>
             </div>
-            <Footer />
+            
         </>
     );
 }
