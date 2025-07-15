@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from './navbar';
-import Footer from './footer';
 
 export default function NewNote() {
     return (
@@ -58,6 +56,10 @@ export default function NewNote() {
                     
                 </form>
             </div>
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 000a100f5e390cd68fe213bb8fbe7bb306753ad8
         </>
     );
 }
