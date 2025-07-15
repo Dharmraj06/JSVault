@@ -16,11 +16,7 @@ function App() {
 				<Route path="/" element={<Login />} /> 
 				<Route path="/dashboard" element={<Dashboard />} />
 				<Route path="/register" element={<Register />} />
-<<<<<<< HEAD
-				<Route path="/newNote" element={<NewNote />} /> /* Page to create a new note */
-=======
-				<Route path="/new-note" element={<NewNote />} />
->>>>>>> 000a100f5e390cd68fe213bb8fbe7bb306753ad8
+				<Route path="/newNote" element={<NewNote />} />
 			</Routes>
 		<Footer />
 		</BrowserRouter>
