@@ -51,7 +51,6 @@ export default function NewNote() {
                     <div>
                         <Link to="/dashboard" className="btn btn-secondary ml-2">Cancel</Link>
                         <button type="submit" className="btn btn-primary">Save Note</button>
-                        <p>Click 'Save Note' to save your note or 'Cancel' to go back to the dashboard.</p>
                     </div>
                     
                 </form>
