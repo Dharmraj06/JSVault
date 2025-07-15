@@ -6,7 +6,7 @@ import Navbar from '../client/navbar.jsx';
 import Dashboard from '../client/dashboard.jsx';
 import React from 'react';
 import Footer from '../client/footer.jsx';
-import NewNote from '../client/newNote.jsx';
+
 function App() {
 	return (
 		<BrowserRouter>
