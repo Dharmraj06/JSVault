@@ -17,7 +17,7 @@ function Dashboard() {
         <h1>Manage Notes</h1>
 		<h4>Manage and organize your JavaScript learning notes.</h4>
 		<ul>
-		  <li><Link to="/new-note" className="button">Create New Note</Link></li>
+		  <li><Link to="/newNote" className="button">Create New Note</Link></li>
 		  <li><Link to="/allnotes" className="button lite">All Notes</Link></li>
 		  <li><Link to="/archive" className="button lite">Archive</Link></li>
 		</ul>
