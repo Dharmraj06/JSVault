@@ -4,6 +4,8 @@ import newUser from './model/user.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import Note from './model/note.js';
+import { useState } from 'react';
+import { set } from 'mongoose';
 
 
 dotenv.config();
@@ -17,6 +19,7 @@ app.use(cors({
   credentials: true                 
 }));
 
+// const [loggedIn, setLoggedIn] = useState(null);
 let loggedIn = null;
 
 app.get("/", (req, res) => {

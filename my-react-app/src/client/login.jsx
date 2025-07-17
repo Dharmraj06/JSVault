@@ -3,11 +3,13 @@ import logo from "../assets/logo.png";
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
+  
   const handlelogin = async () => {
     //send the data to backend
     let response;
@@ -18,6 +20,10 @@ export default function Login() {
         { email, password },
         { withCredentials: true }
       );
+      console.log("Attempting to log in with:", email);
+      navigate("/dashboard", {
+        state: { user: response.data.user },
+      });
 	  
     } catch (error) {
       console.error("Login failed:", error.message);
