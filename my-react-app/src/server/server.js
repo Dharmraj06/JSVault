@@ -3,6 +3,8 @@ import {connectDB} from './db.js';
 import newUser from './model/user.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import Note from './model/note.js';
+
 
 dotenv.config();
 const app = express();
@@ -79,6 +81,25 @@ app.post('/register', async (req, res) => {
     }
 });
 
+
+app.get("/dashboard", async (req, res) => {
+    if (loggedIn) {
+        res.sendFile('dashboard.html', { root: './client/public' });
+    } else {
+        res.redirect("/login");
+    }
+
+    try {
+        const recentNotes = await Note.find({userId: loggedIn._id}).sort({createdAt: -1}).limit(3);
+        res.status(200).json(recentNotes);
+        
+    } catch (error) {
+        console.error("Error fetching recent notes:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+
+
+});
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
     // console.log(User.find());

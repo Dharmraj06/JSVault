@@ -49,8 +49,8 @@ export default function NewNote() {
                     </div>
 
                     <div>
-                        <Link to="/dashboard" className="btn btn-secondary ml-2">Cancel</Link>
-                        <button type="submit" className="btn btn-primary">Save Note</button>
+                        <Link to="/dashboard" className="button lite">Cancel</Link>
+                        <button type="submit" className="button">Save Note</button>
                     </div>
                     
                 </form>

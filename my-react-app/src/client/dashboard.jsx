@@ -1,17 +1,52 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState, useEffect } from "react";
+
 
 function Dashboard() {
-  return (
-    <>
-      <div className="recent-notes">
-        <h1>Recent Notes</h1>
-        <ul>
-          <li>Note 1</li>
-          <li>Note 2</li>
-          <li>Note 3</li>
-        </ul>
-      </div>
+const [recentNotes, setNotes] = useState([]);
+
+
+useEffect(() => {
+  const fetchRecentNotes = async () => {
+    console.log("abc");
+   
+    try {
+      const res = await axios.get("http://localhost:5174/dashboard", { withCredentials: true });
+      console.log("Type of res.data:", typeof res.data);
+      console.log("Is array?", Array.isArray(res.data));
+      console.log("res.data:", res.data);
+
+      if (res.status === 200) {
+        setNotes(res.data);
+        console.log("Recent Notes:", res.data);
+      } else {
+        console.error("Failed to fetch recent notes:", res.statusText);
+        alert("Failed to fetch recent notes. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error fetching recent notes:", error);
+      alert("Failed to fetch recent notes. Please try again later.");
+    }
+  };
+  fetchRecentNotes();
+}, []);
+
+return (
+  <>
+    <div className="recent-notes">
+      <h1>Recent Notes</h1>
+      <ul>
+        
+        {recentNotes.map((note) => (
+          <ul>
+            <li >{note.title}</li>
+            <li>{note.codeDetails}</li>
+          </ul>
+        ))}
+      </ul>
+    </div>
 
       <div className="manage-notes">
         <h1>Manage Notes</h1>
