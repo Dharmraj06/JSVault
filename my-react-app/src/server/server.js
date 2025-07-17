@@ -4,13 +4,13 @@ import newUser from './model/user.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import Note from './model/note.js';
-import { useState } from 'react';
-import { set } from 'mongoose';
+import mongoose from 'mongoose';
 
 
 dotenv.config();
 const app = express();
 const port = 5174;
+let userID;
 
 connectDB();
 
@@ -19,7 +19,6 @@ app.use(cors({
   credentials: true                 
 }));
 
-// const [loggedIn, setLoggedIn] = useState(null);
 let loggedIn = null;
 
 app.get("/", (req, res) => {
@@ -51,8 +50,11 @@ app.post("/login", async (req, res) => {
     if (email && password) {
         try {
             const user = await newUser.findOne({email: email.trim(), password: password.trim()});
+
             if(user) {
                 loggedIn = user;
+                userID = loggedIn._id;
+
                 console.log("User found:", user);
                 res.status(200).json({message: "Login successful", user});
                 console.log("User logged in:", user.email);
@@ -91,7 +93,7 @@ app.post('/newNote', async (req, res) => {
         return res.status(400).json({message: "All fields are required"});
     }
     try {
-        const note = await Note.create({userId: "6874e411349ad1a4aed681ee", title, language, tags, isArchived: false, code, codeDetails});
+        const note = await Note.create({userId: userID, title, language, tags, isArchived: false, code, codeDetails});
         console.log("Note created:", note);
         res.status(201).json({message: "Note created successfully", note});
     } catch (error) {
@@ -101,23 +103,15 @@ app.post('/newNote', async (req, res) => {
 });
 
 
-app.get("/dashboard", async (req, res) => {
-    if (loggedIn) {
-        res.sendFile('dashboard.html', { root: './client/public' });
-    } else {
-        res.redirect("/login");
-    }
-
+app.post('/dashboard', async (req, res) => {
+    console.log("userid is :",userID)
     try {
-        const recentNotes = await Note.find({userId: loggedIn._id}).sort({createdAt: -1}).limit(3);
-        res.status(200).json(recentNotes);
-        
+        const notes = await Note.find({userId: userID}).sort({createdAt: -1});
+        res.status(200).json(notes);
     } catch (error) {
-        console.error("Error fetching recent notes:", error);
+        console.error("Error fetching notes:", error);
         res.status(500).json({message: "Internal server error"});
     }
-
-
 });
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

@@ -20,8 +20,9 @@ export default function Login() {
         { email, password },
         { withCredentials: true }
       );
-      console.log("Attempting to log in with:", email);
-      navigate("/dashboard", {
+      
+
+      navigate("http://localhost:5173/dashboard", {
         state: { user: response.data.user },
       });
 	  

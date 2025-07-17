@@ -8,7 +8,30 @@ function Dashboard() {
 const [recentNotes, setNotes] = useState([]);
 
 
+useEffect(() => {
+  const fetchRecentNotes = async () => {
 
+   
+    try {
+      const res = await axios.post("http://localhost:5174/dashboard", { withCredentials: true });
+      console.log("Type of res.data:", typeof res.data);
+      console.log("Is array?", Array.isArray(res.data));
+      console.log("res.data:", res.data);
+
+      if (res.status === 200) {
+        setNotes(res.data);
+        console.log("Recent Notes:", res.data);
+      } else {
+        console.error("Failed to fetch recent notes:", res.statusText);
+        alert("Failed to fetch recent notes. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error fetching recent notes:", error);
+      alert("Failed to fetch recent notes. Please try again later.");
+    }
+  };
+  fetchRecentNotes();
+}, []);
 
 return (
   <>
