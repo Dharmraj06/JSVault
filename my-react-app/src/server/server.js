@@ -4,8 +4,8 @@ import newUser from './model/user.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import Note from './model/note.js';
-import { useState } from 'react';
-import { set } from 'mongoose';
+
+
 
 
 dotenv.config();
@@ -53,12 +53,14 @@ app.post("/login", async (req, res) => {
             const user = await newUser.findOne({email: email.trim(), password: password.trim()});
             if(user) {
                 loggedIn = user;
+                const notes = await Note.find({userId: user._id});
+                console.log(notes);
                 console.log("User found:", user);
-                res.status(200).json({message: "Login successful", user});
+                res.status(200).json({message: "Login successful", user, notes});
                 console.log("User logged in:", user.email);
-            } else {
+                } else {
                 res.status(401).json({message: "Invalid email or password"});
-            }
+                }
 
         } catch (error) {
 
@@ -116,8 +118,17 @@ app.get("/dashboard", async (req, res) => {
         console.error("Error fetching recent notes:", error);
         res.status(500).json({message: "Internal server error"});
     }
+});
 
-
+app.post('/dashboard', async (req, res) => {
+    const {userId} = req.body;
+    try {
+        const notes = await Note.find({userId: new mongoose.Types.ObjectId('6874e411349ad1a4aed681ee')}).sort({createdAt: -1});
+        res.status(200).json(notes);
+    } catch (error) {
+        console.error("Error fetching notes:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
 });
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

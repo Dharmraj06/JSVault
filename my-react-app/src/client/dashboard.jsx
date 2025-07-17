@@ -2,17 +2,28 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
+// import Note from "../server/model/note.js";
 
 
 function Dashboard() {
-const [recentNotes, setNotes] = useState([]);
+  // const [recentNotes, setNotes] = useState([]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:5174/dashboard")
+  //     .then((response) => {
+  //       setNotes(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching recent notes:", error);
+  //     });
+  // }, []);
 
+  // console.log("Rendering Dashboard with recent notes:", recentNotes);
 
-
-return (
+  return (
   <>
-    <div className="recent-notes">
+    {/* <div className="recent-notes">
       <h1>Recent Notes</h1>
       <ul>
         
@@ -23,7 +34,7 @@ return (
           </ul>
         ))}
       </ul>
-    </div>
+    </div> */}
 
       <div className="manage-notes">
         <h1>Manage Notes</h1>
