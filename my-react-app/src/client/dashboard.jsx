@@ -10,7 +10,7 @@ const [recentNotes, setNotes] = useState([]);
 
 useEffect(() => {
   const fetchRecentNotes = async () => {
-    console.log("abc");
+
    
     try {
       const res = await axios.get("http://localhost:5174/dashboard", { withCredentials: true });
