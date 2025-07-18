@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import logo from "../assets/logo.png";
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -9,23 +9,24 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  
+
   const handlelogin = async () => {
-    //send the data to backend
+    
     let response;
-	console.log(email, password);
+    console.log(email, password);
     try {
+
       response = await axios.post(
         "http://localhost:5174/login",
         { email, password },
         { withCredentials: true }
       );
-      
 
       navigate("http://localhost:5173/dashboard", {
+        
         state: { user: response.data.user },
       });
-	  
+
     } catch (error) {
       console.error("Login failed:", error.message);
       if (error.response) {
@@ -91,7 +92,8 @@ export default function Login() {
       <div className="createAccount">
         <h1>Don't have an account?</h1>
         <Link to="/register" className="button lite">
-          Create an Account</Link>
+          Create an Account
+        </Link>
         {/* <button className="button lite">Create an Account</button> */}
       </div>
 

@@ -4,13 +4,15 @@ import newUser from './model/user.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import Note from './model/note.js';
-
-
+import passport from 'passport';
+import { session } from 'express-session';
+import LocalStrategy from 'passport-local';
+import bcrypt from 'bcyrpt';
 
 dotenv.config();
 const app = express();
 const port = 5174;
-let userID;
+
 
 connectDB();
 
@@ -19,68 +21,90 @@ app.use(cors({
   credentials: true                 
 }));
 
-let loggedIn = null;
-
-app.get("/", (req, res) => {
-    if (loggedIn) {
-        res.redirect("/dashboard");
-    }else {
-        res.redirect("/login");
-    }
-}
-
-);  
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('/client/public'));
+app.use(session({
+    secret: 'secrets',//to be updated
+    resave: null,
+    uninitailized: true,
+}))
 
-app.get("/login", (req, res) => {
-    if (loggedIn) {
-        res.redirect("/dashboard");
-    } else {
-        res.sendFile('login.html', { root: './client/public' });
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+passport.use(new LocalStrategy(
+    {
+        usernameField: 'email',
+        passwordField: 'password'
+    },
+    async (email, password, done) => {
+        try {
+
+            const user = await newUser.findOne({email: email.trim()});
+            
+            if(user) {
+                
+                const match = await bcrypt.compare(password,user.password);
+                if(match){
+                    return done(null,user);
+                } else{
+                    return done(null,false,{message: "incorrect password"});
+                }
+                
+            } else {
+                return done(null,false,{message: "incorrect email"});
+            }
+        } catch (error) {
+            return done(error)
+        }
     }
+));
+
+passport.serializeUser((user,done) =>{
+    done(null,user.id);
 })
 
-app.post("/login", async (req, res) => {
-    const {email, password} = req.body;
-
-    //checking in the DB that this user exists
-    if (email && password) {
-        try {
-            const user = await newUser.findOne({email: email.trim(), password: password.trim()});
-
-            if(user) {
-                loggedIn = user;
-                userID = loggedIn._id;
-
-                console.log("User found:", user);
-                res.status(200).json({message: "Login successful", user});
-                console.log("User logged in:", user.email);
-            } else {
-                res.status(401).json({message: "Invalid email or password"});
-            }
-
-        } catch (error) {
-
-            res.status(500).json({message: "Internal server error"});
-            console.error("Error during login:", error);
-        }
-    } else {
-        res.status(400).json({message: "Invalid email or password"});
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await newUser.findById(id);
+        done(null, user);
+    } catch (error) {
+        done(error);
     }
+});
 
+app.get("/", (req, res) => {
+    if(req.isAuthenticated()){
+        res.redirect("/dashboard");
+    }else{
+        res.redirect("/login");
+    }
+});  
+
+app.get("/login", (req, res) => {
+    if(req.isAuthenticated()){
+        res.redirect("/dashboard");
+    }
+});
+
+app.post("/login", passport.authenticate('local'),(req,res) => {
+    res.status(200).json({message: 'login successful',user: req.user});
 });
 
 app.post('/register', async (req, res) => {
     const {name, email, password} = req.body;
-
     try {
+
         const user = await newUser.create({name, email, password});
-        console.log("User registered:", user);
-        res.status(201).json({message: "Registration successful", user});
+
+        console.log("usser registered:", user);
+
+        res.status(201).json({message: "registration successful", user});
     } catch (error) {
+
         console.error("Error during registration:", error);
         res.status(500).json({message: "Internal server error"});
     }
@@ -89,13 +113,17 @@ app.post('/register', async (req, res) => {
 app.post('/newNote', async (req, res) => {
     console.log("Received new note request:");
     const {title, language, tags, code, codeDetails} = req.body;
+
     if (!title || !language || !tags || !code || !codeDetails) {
         return res.status(400).json({message: "All fields are required"});
     }
     try {
+
+        const userID = req.user._id;
         const note = await Note.create({userId: userID, title, language, tags, isArchived: false, code, codeDetails});
         console.log("Note created:", note);
         res.status(201).json({message: "Note created successfully", note});
+        
     } catch (error) {
         console.error("Error during note creation:", error);
         res.status(500).json({message: "Internal server error"});
@@ -104,15 +132,16 @@ app.post('/newNote', async (req, res) => {
 
 
 app.post('/dashboard', async (req, res) => {
-    console.log("userid is :",userID)
+    console.log("userid is :",req.user._id)
     try {
-        const notes = await Note.find({userId: userID}).sort({createdAt: -1});
-        res.status(200).json(notes);
+        const recentnotes = await Note.find(req.user._id).sort({createdAt: -1});
+        res.status(200).json(recentnotes);
     } catch (error) {
-        console.error("Error fetching notes:", error);
+        console.error("Error fetching recentnotes:", error);
         res.status(500).json({message: "Internal server error"});
     }
 });
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
     // console.log(User.find());
