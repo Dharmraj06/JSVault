@@ -5,9 +5,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import Note from './model/note.js';
 import passport from 'passport';
-import { session } from 'express-session';
+import session from 'express-session';
 import LocalStrategy from 'passport-local';
-import bcrypt from 'bcyrpt';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 const app = express();
@@ -28,7 +28,7 @@ app.use(express.static('/client/public'));
 app.use(session({
     secret: 'secrets',//to be updated
     resave: null,
-    uninitailized: true,
+    saveUninitialized: true,
 }))
 
 app.use(passport.initialize());
@@ -97,10 +97,9 @@ app.post("/login", passport.authenticate('local'),(req,res) => {
 app.post('/register', async (req, res) => {
     const {name, email, password} = req.body;
     try {
-
-        const user = await newUser.create({name, email, password});
-
-        console.log("usser registered:", user);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await newUser.create({name, email, hashedPassword});
+        console.log("user registered:", user);
 
         res.status(201).json({message: "registration successful", user});
     } catch (error) {

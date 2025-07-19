@@ -11,22 +11,18 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handlelogin = async () => {
-    
     let response;
     console.log(email, password);
     try {
-
       response = await axios.post(
         "http://localhost:5174/login",
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true } 
       );
 
       navigate("http://localhost:5173/dashboard", {
-        
         state: { user: response.data.user },
       });
-
     } catch (error) {
       console.error("Login failed:", error.message);
       if (error.response) {
