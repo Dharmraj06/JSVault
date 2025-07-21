@@ -109,7 +109,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-app.post('/newNote', async (req, res) => {
+app.post('/newNote',ensureauth, async (req, res) => {
     console.log("Received new note request:");
     const {title, language, tags, code, codeDetails} = req.body;
 
@@ -128,9 +128,13 @@ app.post('/newNote', async (req, res) => {
         res.status(500).json({message: "Internal server error"});
     }
 });
+function ensureauth(req,res,next){
+    if(req.isAuthenticated())return next();// calling the nxt middleware
 
+    res.status(401).json({message: 'Unauthorized. please login!'})
+}
 
-app.post('/dashboard', async (req, res) => {
+app.post('/dashboard',ensureauth, async (req, res) => {
     console.log("userid is :",req.user._id)
     try {
         const recentnotes = await Note.find(req.user._id).sort({createdAt: -1});
