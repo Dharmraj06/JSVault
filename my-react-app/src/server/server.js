@@ -129,6 +129,30 @@ app.post('/newNote', async (req, res) => {
     }
 });
 
+app.get('/editNote/:id', async (req, res) => {
+    const userid = req.params.id;
+    try{
+        const note = Note.find({userId: userid}).sort({createdAt: -1});
+        res.status(200).json(note);
+    } catch (error) {
+        console.error("Error fetching notes:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+});
+
+app.get('/userProfile', async (req, res) => {
+    try {
+        const user = await newUser.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+});
+
 
 app.post('/dashboard', async (req, res) => {
     console.log("userid is :",req.user._id)
