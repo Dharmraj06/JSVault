@@ -27,14 +27,15 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('/client/public'));
 app.use(session({
     secret: 'secrets',//to be updated
-    resave: null,
+    resave: false,
     saveUninitialized: true,
-    Cookie:{
+    cookie:{
         httpOnly: true,
         secure: false,
-        sameSite: 'lex'
+        sameSite: 'lax'
     }
 }))
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -145,7 +146,7 @@ function ensureauth(req,res,next){
 app.post('/dashboard',ensureauth, async (req, res) => {
     console.log("userid is :",req.user._id)
     try {
-        const recentnotes = await Note.find(req.user._id).sort({createdAt: -1});
+        const recentnotes = await Note.find({ userId: req.user._id }).sort({ createdAt: -1 });
         console.log(recentnotes)
         res.status(200).json(recentnotes);
     } catch (error) {

@@ -9,7 +9,7 @@ export default function NewNote() {
     const [codeDetails, setCodeDetails] = React.useState('');
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission logic here
+        
         const noteData = {
             title: noteTitle,
             language: languageType,
@@ -17,6 +17,7 @@ export default function NewNote() {
             code: code,
             codeDetails: codeDetails,
         };
+        
         console.log(noteData);
         axios.post('http://localhost:5174/newNote', noteData,{withCredentials: true})
             .then(response => {

@@ -11,7 +11,7 @@ export default function Navbar() {
                 <div className="container-fluid">
                     <img src={logo} style={{ width: "50px", height: "auto", marginLeft: "0px", marginRight: "10px" }} alt="site logo" />
                     <Link className="navbar-brand" to="/Dashboard">JSVault</Link>
-                    <div class="vr"></div>
+                    <div className="vr"></div>
                     <button
                         className="navbar-toggler"
                         type="button"
