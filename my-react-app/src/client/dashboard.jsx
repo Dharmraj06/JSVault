@@ -3,10 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-
 function Dashboard() {
 const [recentNotes, setNotes] = useState([]);
-
 
 useEffect(() => {
   const fetchRecentNotes = async () => {

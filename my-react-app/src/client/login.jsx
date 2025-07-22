@@ -20,7 +20,7 @@ export default function Login() {
         { withCredentials: true } 
       );
 
-      navigate("http://localhost:5173/dashboard", {
+      navigate("/dashboard", {
         state: { user: response.data.user },
       });
     } catch (error) {

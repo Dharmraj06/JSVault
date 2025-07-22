@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,7 +9,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  
+
   const handleRegister = async () => {
     let response;
 
@@ -20,7 +19,7 @@ export default function Register() {
         email,
         password,
       });
-      navigate("http://localhost:5173/dashboard", {
+      navigate("/dashboard", {
         state: { user: response.data.user },
       });
     } catch (error) {
