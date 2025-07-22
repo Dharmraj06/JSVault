@@ -36,7 +36,7 @@ export default function Register() {
 
       <div>
         <div className="login-image">
-          <img src={logo} alt="site logo" />
+          <img src={logo} style={{width:"200px",height:"auto"}} alt="site logo" />
         </div>
 
         <div>

@@ -37,11 +37,17 @@ return (
       <h1>Recent Notes</h1>
       <ul>
         
-        {recentNotes.map((note) => (
-          <ul>
-            <li >{note.title}</li>
-            <li>{note.codeDetails}</li>
-          </ul>
+        {recentNotes.map((note, idx) => (
+
+          <div className="card" style={{ width: "18rem" }} key={note._id || idx}>
+            <img src="..." className="card-img-top" alt="..." />
+            <div className="card-body">
+              <h5 className="card-title">{note.title}</h5>
+              <p className="card-text">{note.codeDetails}</p>
+              <a href="#" className="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+          
         ))}
       </ul>
     </div>

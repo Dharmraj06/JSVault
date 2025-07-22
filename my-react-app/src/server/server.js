@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import Note from './model/note.js';
 import passport from 'passport';
-import session from 'express-session';
+import session, { Cookie } from 'express-session';
 import LocalStrategy from 'passport-local';
 import bcrypt from 'bcrypt';
 
@@ -29,6 +29,11 @@ app.use(session({
     secret: 'secrets',//to be updated
     resave: null,
     saveUninitialized: true,
+    Cookie:{
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lex'
+    }
 }))
 
 app.use(passport.initialize());
@@ -129,45 +134,34 @@ app.post('/newNote',ensureauth, async (req, res) => {
     }
 });
 
-app.get('/editNote/:id', async (req, res) => {
-    const userid = req.params.id;
-    try{
-        const note = Note.find({userId: userid}).sort({createdAt: -1});
-        res.status(200).json(note);
-    } catch (error) {
-        console.error("Error fetching notes:", error);
-        res.status(500).json({message: "Internal server error"});
-    }
-});
 
-app.get('/userProfile', async (req, res) => {
-    try {
-        const user = await newUser.findById(req.user._id);
-        if (!user) {
-            return res.status(404).json({message: "User not found"});
-        }
-        res.status(200).json(user);
-    } catch (error) {
-        console.error("Error fetching user profile:", error);
-        res.status(500).json({message: "Internal server error"});
-    }
-});
 function ensureauth(req,res,next){
     if(req.isAuthenticated())return next();// calling the nxt middleware
 
     res.status(401).json({message: 'Unauthorized. please login!'})
+   
 }
 
 app.post('/dashboard',ensureauth, async (req, res) => {
     console.log("userid is :",req.user._id)
     try {
         const recentnotes = await Note.find(req.user._id).sort({createdAt: -1});
+        console.log(recentnotes)
         res.status(200).json(recentnotes);
     } catch (error) {
         console.error("Error fetching recentnotes:", error);
         res.status(500).json({message: "Internal server error"});
     }
 });
+
+app.post('/logout', (req, res) => {
+  req.logout(() => {
+    req.session.destroy();
+    res.clearCookie('connect.sid');
+    res.status(200).json({ message: 'Logged out successfully' });
+  });
+});
+
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

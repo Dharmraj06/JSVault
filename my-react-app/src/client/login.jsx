@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -44,7 +43,7 @@ export default function Login() {
 
       <div>
         <div className="login-image">
-          <img src={logo} alt="site logo" />
+          <img src={logo} style= {{width:"200px",height:"auto"}} alt="site logo" />
         </div>
 
         <div>
