@@ -18,12 +18,12 @@ export default function NewNote() {
             codeDetails: codeDetails,
         };
         console.log(noteData);
-        axios.post('http://localhost:5174/newNote', noteData)
+        axios.post('http://localhost:5174/newNote', noteData,{withCredentials: true})
             .then(response => {
                 console.log(response.data);
             })
             .catch(error => {
-                console.error(error);
+                console.error("error in creating new note: ",error);
             });
     };
 
