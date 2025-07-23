@@ -155,6 +155,20 @@ app.post('/dashboard',ensureauth, async (req, res) => {
     }
 });
 
+app.get('/editNotes/:id', ensureauth, async (req, res) => {
+    const noteId = req.params.id;
+    try {
+        const note = await Note.findById(noteId);
+        if (!note) {
+            return res.status(404).json({message: "Note not found"});
+        }
+        res.status(200).json(note);
+    } catch (error) {
+        console.error("Error fetching note:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+});
+
 app.post('/logout', (req, res) => {
   req.logout(() => {
     req.session.destroy();

@@ -45,9 +45,9 @@ function Dashboard() {
               <div className="card-body">
                 <h5 className="card-title">{note.title}</h5>
                 <p className="card-text">{note.codeDetails}</p>
-                <a href="#" className="btn btn-primary">
+                <Link to={`/editNotes/${note._id}`}  className="btn btn-primary">
                   Edit
-                </a>
+                </Link>
                 <a href="#" className="btn btn-primary">
                   Delete
                 </a>
