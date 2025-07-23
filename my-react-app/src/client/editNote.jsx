@@ -21,7 +21,7 @@ export default function EditNote() {
         
         const fetchNotes = async () => {
             try {
-            const response = await axios.get(`http://localhost:5174/editNote/${id}`, {
+            const response = await axios.get(`http://localhost:5174/editNotes/${id}`, {
                 withCredentials: true,
             });
                 if (response.status === 200) {
@@ -60,7 +60,7 @@ export default function EditNote() {
         <>
             <div className="container">
                 <h1>Edit Your Note</h1>
-                <form >
+                <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="noteTitle">Title</label>
                         <input type="text" value={title} onChange={(e) => setNote({ ...note, title: e.target.value })} className="form-control" id="noteTitle" placeholder="Enter note title" />
