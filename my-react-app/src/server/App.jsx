@@ -8,21 +8,34 @@ import Footer from '../client/footer.jsx';
 import NewNote from '../client/newNote.jsx';
 import EditNote from '../client/editNote.jsx';
 import AllNotes from '../client/allnotes.jsx';
-function App() {
-	return (
-		<BrowserRouter>
-		<Navbar />
-			<Routes>
-				<Route path="/" element={<Login />} /> 
-				<Route path="/dashboard" element={<Dashboard />} />
-				<Route path="/register" element={<Register />} />
-				<Route path="/newNote" element={<NewNote />} />
-				<Route path="/editNotes/:id" element={<EditNote />} />
-				<Route path="/AllNotes" element={<AllNotes />} />
-			</Routes>
-		<Footer />
-		</BrowserRouter>
-	)
+import { useLocation } from "react-router-dom";
+
+function Layout() {
+  const location = useLocation();
+  const hideHeaderFooter = location.pathname === '/' || location.pathname === '/register';
+
+  return (
+    <>
+      {!hideHeaderFooter && <Navbar />}
+      
+      <Routes>
+        <Route path="/" element={<Login />} /> 
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/newNote" element={<NewNote />} />
+        <Route path="/editNotes/:id" element={<EditNote />} />
+        <Route path="/AllNotes" element={<AllNotes />} />
+      </Routes>
+
+      {<Footer />}
+    </>
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Layout />
+    </BrowserRouter>
+  );
+}
