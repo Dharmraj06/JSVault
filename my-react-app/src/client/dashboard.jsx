@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Card from "./card";
+import { useNavigate } from "react-router-dom";
+
 function Dashboard() {
+  const navigate = useNavigate();
   const [recentNotes, setNotes] = useState([]);
+  const [userData, setUserData] = useState(null);  // store user data
 
   useEffect(() => {
     const fetchRecentNotes = async () => {
@@ -16,6 +20,7 @@ function Dashboard() {
         console.log("res.data:", res.data);
 
         if (res.status === 200) {
+          setUserData(res.data.user);
           setNotes(res.data);
           console.log("Recent Notes:", res.data);
         } else {
@@ -30,6 +35,11 @@ function Dashboard() {
     fetchRecentNotes();
   }, []);
 
+  function openAllNotes() {
+    navigate("/AllNotes",{
+      state: { user: userData },
+    })
+  }
   return (
     <>
       <div className="recent-notes">
@@ -67,7 +77,7 @@ function Dashboard() {
             </Link>
           </li>
           <li>
-            <Link to="/allnotes" className="button lite">
+            <Link to="/allnotes" className="button lite" onClick={openAllNotes}>
               All Notes
             </Link>
           </li>

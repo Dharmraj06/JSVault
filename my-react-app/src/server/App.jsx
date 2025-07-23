@@ -7,7 +7,7 @@ import Dashboard from '../client/dashboard.jsx';
 import Footer from '../client/footer.jsx';
 import NewNote from '../client/newNote.jsx';
 import EditNote from '../client/editNote.jsx';
-
+import AllNotes from '../client/allnotes.jsx';
 function App() {
 	return (
 		<BrowserRouter>
@@ -18,6 +18,7 @@ function App() {
 				<Route path="/register" element={<Register />} />
 				<Route path="/newNote" element={<NewNote />} />
 				<Route path="/editNotes/:id" element={<EditNote />} />
+				<Route path="/AllNotes" element={<AllNotes />} />
 			</Routes>
 		<Footer />
 		</BrowserRouter>
