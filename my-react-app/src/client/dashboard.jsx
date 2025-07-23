@@ -45,10 +45,10 @@ function Dashboard() {
               <div className="card-body">
                 <h5 className="card-title">{note.title}</h5>
                 <p className="card-text">{note.codeDetails}</p>
-                <Link to={`/editNotes/${note._id}`}  className="btn btn-primary">
+                <Link to={`/editNotes/${note._id}`}  className="button">
                   Edit
                 </Link>
-                <a href="#" className="btn btn-primary">
+                <a href="#" className="button lite">
                   Delete
                 </a>
               </div>
