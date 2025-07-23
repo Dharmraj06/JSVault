@@ -6,6 +6,7 @@ import Navbar from '../client/navbar.jsx';
 import Dashboard from '../client/dashboard.jsx';
 import Footer from '../client/footer.jsx';
 import NewNote from '../client/newNote.jsx';
+import EditNote from '../client/editNote.jsx';
 
 function App() {
 	return (
@@ -16,6 +17,7 @@ function App() {
 				<Route path="/dashboard" element={<Dashboard />} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/newNote" element={<NewNote />} />
+				<Route path="/editNotes/:id" element={<EditNote />} />
 			</Routes>
 		<Footer />
 		</BrowserRouter>

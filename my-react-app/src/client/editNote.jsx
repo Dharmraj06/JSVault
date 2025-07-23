@@ -1,57 +1,76 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
-export default function NewNote() {
-    const [noteTitle, setNoteTitle] = React.useState('');
+export default function EditNote() {
+    const { id } = useParams();
+    const [title, setTitle] = React.useState('');
     const [languageType, setLanguageType] = React.useState('code');
     const [tags, setTags] = React.useState('');
     const [code, setCode] = React.useState('');
     const [codeDetails, setCodeDetails] = React.useState('');
+    const [note, setNote] = React.useState({
+        title: '',
+        language: '',
+        tags: '',
+        code: '',
+        codeDetails: '',
+    });
 
-    const user = axios.get('http://localhost:5174/userProfile');
 
-    const noteData = axios.get(`http://localhost:5174/editNote/:${user._id}`);
-    setNoteTitle(noteData.title);
-    setLanguageType(noteData.language);
-    setTags(noteData.tags.join(', '));
-    setCode(noteData.code);
-    setCodeDetails(noteData.codeDetails);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission logic here
-        const noteData = {
-            title: noteTitle,
-            language: languageType,
-            tags: tags,
-            code: code,
-            codeDetails: codeDetails,
-        };
-        console.log(noteData);
-        axios.post('http://localhost:5174/newNote', noteData)
-            .then(response => {
-                console.log(response.data);
-            })
-            .catch(error => {
-                console.error(error);
+    useEffect(() => {
+        
+        const fetchNotes = async () => {
+            try {
+            const response = await axios.get(`http://localhost:5174/editNote/${id}`, {
+                withCredentials: true,
             });
-    };
+                if (response.status === 200) {
+                    setTitle(response.data.title);
+                    setLanguageType(response.data.language);
+                    setTags(response.data.tags.join(', '));
+                    setCode(response.data.code);
+                    setCodeDetails(response.data.codeDetails);
+                    setNote(response.data);
+                } else {
+                    console.error('Failed to fetch note:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching notes:', error);
+            }
+        };
+        fetchNotes();
+    }, []);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5174/newNote', note, {
+                withCredentials: true,
+            });
+            if (response.status === 201) {
+                console.log('Note created successfully:', response.data);
+            } else {
+                console.error('Failed to create note:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error creating note:', error);
+        }
+    };
     return (
         <>
             <div className="container">
-                <h1>Create a New Note</h1>
-                <form onSubmit={handleSubmit}>
+                <h1>Edit Your Note</h1>
+                <form >
                     <div className="form-group">
                         <label htmlFor="noteTitle">Title</label>
-                        <input type="text" value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} className="form-control" id="noteTitle" placeholder="Enter note title" />
+                        <input type="text" value={title} onChange={(e) => setNote({ ...note, title: e.target.value })} className="form-control" id="noteTitle" placeholder="Enter note title" />
                         <p>Enter a title for your note.</p>
                     </div>
 
                     <div className="form-group">
                         <div>
                             <label htmlFor="Languagetype">Language</label>
-                            <select onSelect={(e) => setLanguageType(e.target.value)} className="form-control" id="Languagetype">
+                            <select value={languageType} onChange={(e) => setNote({ ...note, language: e.target.value })} className="form-control" id="Languagetype">
                                 <option value="code">Python</option>
                                 <option value="note">JavaScript</option>
                                 <option value="note">Java</option>
@@ -63,7 +82,7 @@ export default function NewNote() {
                     
                         <div>
                             <label htmlFor="Tag">Tags</label>
-                            <input value={tags} onChange={(e) => setTags(e.target.value)} type="text" className="form-control" id="Tag" placeholder="Enter tags (comma separated)" />
+                            <input value={tags} onChange={(e) => setNote({ ...note, tags: e.target.value })} type="text" className="form-control" id="Tag" placeholder="Enter tags (comma separated)" />
                             <p>Use tags to categorize your notes.</p>
                         </div>
 
@@ -72,13 +91,13 @@ export default function NewNote() {
                     <div className="form-group">
                         <div>
                         <label htmlFor="noteContent">Code</label>
-                        <textarea value={code} onChange={(e) => setCode(e.target.value)} className="form-control" id="noteContent" rows="5" placeholder="Write your code here..."></textarea>
+                        <textarea value={code} onChange={(e) => setNote({...note, code: e.target.value})} className="form-control" id="noteContent" rows="5" placeholder="Write your code here..."></textarea>
                         <p>Write your code snippet here.</p>
                         </div>
 
                         <div> 
                         <label htmlFor="noteDetails">Code Details</label>
-                        <textarea value={codeDetails} onChange={(e) => setCodeDetails(e.target.value)} className="form-control" id="noteDetails" rows="5" placeholder="Write your note here..."></textarea>
+                        <textarea value={codeDetails} onChange={(e) => setNote({...note, codeDetails: e.target.value})} className="form-control" id="noteDetails" rows="5" placeholder="Write your note here..."></textarea>
                         <p>Write your note here.</p>
                         </div>
                     </div>
