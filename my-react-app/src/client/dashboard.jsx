@@ -1,10 +1,35 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
 function Dashboard() {
   const [recentNotes, setNotes] = useState([]);
+  // const { id } = useParams();
+
+  const handleDelete = async (noteId) => {
+  try {
+    const res = await axios.post(`http://localhost:5174/deleteNote/${noteId}`, {}, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (res.status === 200) {
+      console.log("Note deleted successfully:", res.data);
+      setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+    }
+  } catch (error) {
+    if (error.response?.status === 401) {
+      alert("Please login to delete notes");
+      window.location.href = '/login';
+    } else {
+      console.error("Error deleting note:", error);
+      alert("Failed to delete note. Please try again later.");
+    }
+  }
+};
 
   useEffect(() => {
     const fetchRecentNotes = async () => {
@@ -48,9 +73,11 @@ function Dashboard() {
                 <Link to={`/editNotes/${note._id}`}  className="btn btn-primary">
                   Edit
                 </Link>
-                <a href="#" className="btn btn-primary">
+                <button 
+                  onClick={() => handleDelete(note._id)} 
+                  className="btn btn-primary">
                   Delete
-                </a>
+                </button>
               </div>
             </div>
           ))}
