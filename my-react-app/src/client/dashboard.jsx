@@ -2,34 +2,13 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Card from "./card";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [recentNotes, setNotes] = useState([]);
-  // const { id } = useParams();
-
-  const handleDelete = async (noteId) => {
-  try {
-    const res = await axios.post(`http://localhost:5174/deleteNote/${noteId}`, {}, {
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (res.status === 200) {
-      console.log("Note deleted successfully:", res.data);
-      setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
-    }
-  } catch (error) {
-    if (error.response?.status === 401) {
-      alert("Please login to delete notes");
-      window.location.href = '/login';
-    } else {
-      console.error("Error deleting note:", error);
-      alert("Failed to delete note. Please try again later.");
-    }
-  }
-};
+  const [userData, setUserData] = useState(null);  // store user data
 
   useEffect(() => {
     const fetchRecentNotes = async () => {
@@ -41,6 +20,7 @@ function Dashboard() {
         console.log("res.data:", res.data);
 
         if (res.status === 200) {
+          setUserData(res.data.user);
           setNotes(res.data);
           console.log("Recent Notes:", res.data);
         } else {
@@ -55,6 +35,11 @@ function Dashboard() {
     fetchRecentNotes();
   }, []);
 
+  function openAllNotes() {
+    navigate("/AllNotes",{
+      state: { user: userData },
+    })
+  }
   return (
     <>
       <div className="recent-notes">
@@ -94,7 +79,7 @@ function Dashboard() {
             </Link>
           </li>
           <li>
-            <Link to="/allnotes" className="button lite">
+            <Link to="/allnotes" className="button lite" onClick={openAllNotes}>
               All Notes
             </Link>
           </li>
