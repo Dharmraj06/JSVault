@@ -217,6 +217,19 @@ app.get("/AllNotes", ensureauth, async (req, res) => {
   }
 });
 
+app.post('/deleteNote/:id', ensureauth, async (req, res) => {
+    const noteId = req.params.id;
+    try {
+        const note = await Note.findByIdAndDelete(noteId);
+        if (!note) {
+            return res.status(404).json({message: "Note not found"});
+        }
+        res.status(200).json({message: "Note deleted successfully"});
+    } catch (error) {
+        console.error("Error deleting note:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+});
 
 
 app.listen(port, () => {

@@ -1,8 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import Card from "./card";
+// import Card from "./card";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
@@ -34,7 +34,6 @@ function Dashboard() {
   }
 };
 
-  
   useEffect(() => {
     const fetchRecentNotes = async () => {
       try {
@@ -76,11 +75,11 @@ function Dashboard() {
               style={{ width: "18rem" }}
               key={note._id || idx}
             >
-              {/* //<img src="..." className="card-img-top" alt="..." /> */}
+              <img src="..." className="card-img-top" alt="..." />
               <div className="card-body">
                 <h5 className="card-title">{note.title}</h5>
                 <p className="card-text">{note.codeDetails}</p>
-                <Link to={`/editNotes/${note._id}`}  className="button">
+                <Link to={`/editNotes/${note._id}`}  className="btn btn-primary">
                   Edit
                 </Link>
                 <button 

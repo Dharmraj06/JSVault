@@ -104,7 +104,7 @@ export default function EditNote() {
 
                     <div>
                         <Link to="/dashboard" className="button lite">Cancel</Link>
-                        <button type="submit" className="button">Save Note</button>
+                        <Link to="/dashboard" type="submit" className="button">Save Note</Link>
                     </div>
                     
                 </form>
