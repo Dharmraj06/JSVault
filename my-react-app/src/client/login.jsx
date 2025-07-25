@@ -99,17 +99,7 @@ export default function Login() {
           <Link to="/register" className="button-link lite">
             Create an Account
           </Link>
-          
-          {/* <button className="button lite">Create an Account</button> */}
         </div>
-        
-        {/* <div className="footer">
-          <div className="footer-links">
-            <a href="#" className="button">Privacy Policy</a>
-            <a href="#" className="button">Terms of Service</a>
-            <a href="#" className="button">Contact Us</a>
-          </div>
-        </div> */}
       </div>
     </>
   );
