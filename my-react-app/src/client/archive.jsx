@@ -17,6 +17,8 @@ export default function Archive() {
       }
     };
 
+    const handlearchive;
+
     fetchArchivedNotes();
   }, []);
 
@@ -27,13 +29,25 @@ export default function Archive() {
         <p>No archived notes available.</p>
       ) : (
         archivedNotes.map((note) => (
-          <div key={note._id} className="card">
-            <h3>{note.title}</h3>
-            <p><strong>Language:</strong> {note.language}</p>
-            <p><strong>Tags:</strong> {note.tags.join(", ")}</p>
-            <pre>{note.code}</pre>
-            <p>{note.codeDetails}</p>
-          </div>
+          <div
+              className="card"
+              style={{ width: "18rem" }}
+              key={note._id}
+            >
+              {/* <img src="..." className="card-img-top" alt="..." /> */}
+              <div className="card-body">
+                <h5 className="card-title">{note.title}</h5>
+                <p className="card-text">{note.codeDetails}</p>
+                <Link to={`/editNotes/${note._id}`}  className="button-link">
+                  Edit
+                </Link>
+                <button 
+                  onClick={() => handlearchive(note._id)} 
+                  className="button lite">
+                  Unarchive
+                </button>
+              </div>
+            </div>
         ))
       )}
     </div>
