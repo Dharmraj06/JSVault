@@ -165,17 +165,21 @@ hr{
 
 .button-link:focus,
 .button-link:hover {
-  color: #FEBF00;
+  color: #EF802F;
+  border: 2px solid #EF802F;
 }
 
 .lite{
         border: none;
 }
+.lite:hover{
+    border: none !important;    
+}
 .lite:focus:after,
+
 .lite:hover:after {
   width: 100%;
   left: 0%;
-  
 }
 .lite::after{
         background-color:#FEBF00;

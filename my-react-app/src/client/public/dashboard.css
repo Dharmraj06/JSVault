@@ -1,0 +1,88 @@
+.dasboard{
+    display: grid;
+    grid-template-columns: 183px 1fr;
+    grid-template-rows: repeat(2,1fr);
+}
+
+.sidebar{
+    grid-column: 1/1;
+    grid-row: 1/3;
+    border-right: 1px solid rgba(0, 0, 0, 0.081);
+    display: flex;
+    flex-direction: column;
+
+}
+
+.recent-notes{
+    grid-column: 2/2;
+    grid-row: 1/1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.081);
+    padding-top: 40px;
+    
+}
+.recent-notes-list{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.manage-notes{
+    grid-column: 2/2;
+    grid-row: 2/2;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.card-text{
+    height: 14rem;
+}
+hr{
+    width: 100%;
+    color: 1px  rgba(0, 0, 0, 0.081);
+}
+.custom-navbar{
+    background-color: #FFCC57 !important;
+}
+
+ul{
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.navbutton{
+    color: beige;
+}
+
+.manage-notes-buttons{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(2,1fr);
+    align-items: end;
+    justify-items: center;
+}
+
+#newnote{
+    grid-column: 1/3;
+    grid-row: 1/2;   
+}
+
+#allnotes{
+    grid-column: 1/2;
+    grid-row:2/3;
+}
+#archive {
+  grid-column: 2/3;
+  grid-row: 2/3;
+}
