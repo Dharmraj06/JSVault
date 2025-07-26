@@ -1,4 +1,5 @@
 import '../client/public/dashboard.css'
+import '../client/public/dashboard.css'
 import Login from '../client/login.jsx'
 import Register from '../client/register.jsx'
 import {BrowserRouter,Routes,Route} from "react-router-dom";

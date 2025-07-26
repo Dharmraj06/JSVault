@@ -28,7 +28,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg  custom-navbar" >
         <div className="container-fluid">
           <img
             src={logo}
@@ -36,7 +36,8 @@ export default function Navbar() {
               width: "50px",
               height: "auto",
               marginLeft: "0px",
-              marginRight: "10px",
+              marginRight: "20px",
+              borderRadius:"7px"
             }}
             alt="site logo"
           />
@@ -60,21 +61,21 @@ export default function Navbar() {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link
-                  className="nav-link active button-link lite"
+                  className="nav-link active button-link navbutton lite"
                   aria-current="page"
-                  style={{color: "#EF802F",marginLeft:"3px"}}
+                  style={{color: "#bd6322ff",marginLeft:"3px"}}
                   to="/dashboard"
                 >
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link button-link lite" to="/newNote">
+                <Link className="nav-link button-link navbutton lite" to="/newNote" style={{color: "#bd6322ff"}}>
                   New Note
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link button-link lite" to="#" onClick={Logout}>
+                <Link className="nav-link button-link navbutton lite" to="#" onClick={Logout} style={{color: "#bd6322ff"}}>
                   Logout
                 </Link>
               </li>
@@ -94,7 +95,6 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
-      <hr />
     </>
   );
 }

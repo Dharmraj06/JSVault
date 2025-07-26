@@ -18,8 +18,6 @@ export default function Archive() {
       }
     };
 
-    // const handlearchive;
-
     fetchArchivedNotes();
   }, []);
 
