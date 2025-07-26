@@ -220,6 +220,39 @@ app.put("/editNote/:id", ensureauth, async (req, res) => {
   }
 });
 
+app.post("/archiveNote/:id", ensureauth, async (req, res) => {
+  console.log("archive request is reached to server");
+  try{
+    const noteId = req.params.id;
+    const note = await Note.findById(noteId);
+    if (!note){
+     res.status(404).json({message: "not found"});
+    }
+    note.isArchived = true;
+    await note.save();
+    res.status(200).json({message: " Note achived successfully", note});
+  } catch (error) {
+    console.error("error in archiving", error);
+    res.status(500).json({message: "Internal server error"});
+  }
+});
+
+app.get("/archivedNotes", ensureauth, async(req, res) => {
+  console.log("server se bol raha hun.");
+  console.log("user id is:", req.user._id);
+  try{
+    const userId = req.user._id;
+    const archivednotes = await Note.find({userId, isArchived: true});
+    if(!archivednotes){
+      console.log("no archived notes");
+      res.status(404).json({message: "No archived notes"});
+    }
+    res.status(200).json(archivednotes);
+  } catch (error) {
+    console.log("error in achiving notes", error);
+    res.status(500).json({message: "internal server error"});
+  }
+});
 
 app.post("/deleteNote/:id", ensureauth, async (req, res) => {
   const noteId = req.params.id;

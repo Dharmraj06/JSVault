@@ -9,6 +9,7 @@ import NewNote from '../client/newNote.jsx';
 import EditNote from '../client/editNote.jsx';
 import AllNotes from '../client/allnotes.jsx';
 import { useLocation } from "react-router-dom";
+import Archive from '../client/archive.jsx';
 
 function Layout() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function Layout() {
         <Route path="/newNote" element={<NewNote />} />
         <Route path="/editNotes/:id" element={<EditNote />} />
         <Route path="/AllNotes" element={<AllNotes />} />
+        <Route path="/archivedNotes" element={<Archive />} />
       </Routes>
 
       {<Footer />}
