@@ -8,6 +8,7 @@ import passport from "passport";
 import session, { Cookie } from "express-session";
 import LocalStrategy from "passport-local";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 dotenv.config();
 const app = express();
@@ -152,15 +153,15 @@ function ensureauth(req, res, next) {
 app.post("/dashboard", ensureauth, async (req, res) => {
   console.log("userid is :", req.user._id);
   try {
-    const recentnotes = await Note.find({ userId: req.user._id }).sort({
-      createdAt: -1,
-    }).limit(3);
+    const recentnotes = await Note.find({ userId: req.user._id })
+      .sort({
+        createdAt: -1,
+      })
+      .limit(3);
 
     //console.log(recentnotes);
     res.status(200).json(recentnotes);
-
   } catch (error) {
-
     console.error("Error fetching recentnotes:", error);
     res.status(500).json({ message: "Internal server error" });
   }
@@ -168,31 +169,69 @@ app.post("/dashboard", ensureauth, async (req, res) => {
 
 app.get("/editNotes/:id", ensureauth, async (req, res) => {
   const noteId = req.params.id;
+
   try {
+    if (!mongoose.Types.ObjectId.isValid(noteId)) {
+      return res.status(400).json({ message: "Invalid note ID" });
+    }
 
     const note = await Note.findById(noteId);
+
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
     }
-    res.status(200).json(note);
 
+    res.status(200).json(note);
   } catch (error) {
     console.error("Error fetching note:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-app.post('/deleteNote/:id', ensureauth, async (req, res) => {
-    const noteId = req.params.id;
-    try {
-        const note = await Note.findByIdAndDelete(noteId);
-        if (!note) {
-            return res.status(404).json({message: "Note not found"});
-        }
-        res.status(200).json({message: "Note deleted successfully"});
-    } catch (error) {
-        console.error("Error deleting note:", error);
-        res.status(500).json({message: "Internal server error"});
+app.put("/editNote/:id", ensureauth, async (req, res) => {
+  const noteId = req.params.id;
+  const { title, language, tags, code, codeDetails } = req.body;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(noteId)) {
+      return res.status(400).json({ message: "Invalid note ID" });
+    }
+
+    const updatedNote = await Note.findOneAndUpdate(
+      { _id: noteId, userId: req.user._id }, 
+      {
+        title,
+        language,
+        tags,
+        code,
+        codeDetails,
+      },
+      { new: true }
+    );
+
+    if (!updatedNote) {
+      return res.status(404).json({ message: "Note not found or unauthorized" });
+    }
+
+    res.status(200).json({ message: "Note updated successfully", note: updatedNote });
+  } catch (error) {
+    console.error("Error updating note:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+app.post("/deleteNote/:id", ensureauth, async (req, res) => {
+  const noteId = req.params.id;
+  try {
+    const note = await Note.findByIdAndDelete(noteId);
+    if (!note) {
+      return res.status(404).json({ message: "Note not found" });
+    }
+    res.status(200).json({ message: "Note deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -209,7 +248,7 @@ app.get("/AllNotes", ensureauth, async (req, res) => {
     const allnotes = await Note.find({ userId: req.user._id }).sort({
       createdAt: -1,
     });
-    console.log("all notes are as follow ---------",allnotes);
+    console.log("all notes are as follow ---------", allnotes);
     res.status(200).json(allnotes);
   } catch (error) {
     console.error("Error fetching notes:", error);
@@ -217,20 +256,19 @@ app.get("/AllNotes", ensureauth, async (req, res) => {
   }
 });
 
-app.post('/deleteNote/:id', ensureauth, async (req, res) => {
-    const noteId = req.params.id;
-    try {
-        const note = await Note.findByIdAndDelete(noteId);
-        if (!note) {
-            return res.status(404).json({message: "Note not found"});
-        }
-        res.status(200).json({message: "Note deleted successfully"});
-    } catch (error) {
-        console.error("Error deleting note:", error);
-        res.status(500).json({message: "Internal server error"});
+app.post("/deleteNote/:id", ensureauth, async (req, res) => {
+  const noteId = req.params.id;
+  try {
+    const note = await Note.findByIdAndDelete(noteId);
+    if (!note) {
+      return res.status(404).json({ message: "Note not found" });
     }
+    res.status(200).json({ message: "Note deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
-
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

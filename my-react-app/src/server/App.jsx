@@ -1,7 +1,7 @@
 import '../client/public/App.css'
 import Login from '../client/login.jsx'
 import Register from '../client/register.jsx'
-import {BrowserRouter,Routes,Route, Link} from "react-router-dom";
+import {BrowserRouter,Routes,Route} from "react-router-dom";
 import Navbar from '../client/navbar.jsx';
 import Dashboard from '../client/dashboard.jsx';
 import Footer from '../client/footer.jsx';
