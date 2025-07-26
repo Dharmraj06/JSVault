@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Archive() {
   const [archivedNotes, setArchivedNotes] = useState([]);
@@ -17,10 +18,26 @@ export default function Archive() {
       }
     };
 
-    const handlearchive;
+    // const handlearchive;
 
     fetchArchivedNotes();
   }, []);
+
+  const handlearchive = async(noteId) => {
+    try{
+      const res = await axios.post(`http://localhost:5174/unarchiveNote/${noteId}`, {}, {
+        withCredentials: true,
+      });
+      if(res.status ===200){
+        console.log(`Note unarchived: ${noteId}`);
+        setArchivedNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+      } else {
+        console.log("Failed to unarchive the note.");
+      }
+    } catch (error) {
+      console.error("error aa gayi hai: ", error);
+    }
+  }
 
   return (
     <div className="container">

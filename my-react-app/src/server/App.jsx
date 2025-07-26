@@ -1,4 +1,4 @@
-import '../client/public/App.css'
+import '../client/public/dashboard.css'
 import Login from '../client/login.jsx'
 import Register from '../client/register.jsx'
 import {BrowserRouter,Routes,Route} from "react-router-dom";
@@ -29,7 +29,7 @@ function Layout() {
         <Route path="/AllNotes" element={<AllNotes />} />
         <Route path="/archivedNotes" element={<Archive />} />
         <Route path="/Trash" element={<Trash />} />
-        <Route path="/Archive" element={<Archive />} />
+      
       </Routes>
 
       {<Footer />}

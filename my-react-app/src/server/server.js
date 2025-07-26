@@ -153,7 +153,7 @@ function ensureauth(req, res, next) {
 app.post("/dashboard", ensureauth, async (req, res) => {
   console.log("userid is :", req.user._id);
   try {
-    const recentnotes = await Note.find({ userId: req.user._id })
+    const recentnotes = await Note.find({ userId: req.user._id, isArchived: false })
       .sort({
         createdAt: -1,
       })
@@ -251,6 +251,24 @@ app.get("/archivedNotes", ensureauth, async(req, res) => {
   } catch (error) {
     console.log("error in achiving notes", error);
     res.status(500).json({message: "internal server error"});
+  }
+});
+
+app.post("/unarchiveNote/:id", ensureauth, async (req, res) => {
+  console.log("yeh note ab unarchive hogi");
+  try{
+    const noteId = req.params.id;
+    const note = await Note.findById(noteId);
+    if(!note){
+      console.log("note not found");
+
+    }
+    note.isArchived = false;
+    await note.save();
+    res.status(200).json({message: "Note unarchived successfully", note});
+  } catch (error) {
+    console.error("error in unarchiving", error);
+    res.status(500).json({message: "Internal server error"});
   }
 });
 
