@@ -75,16 +75,16 @@ function Dashboard() {
               style={{ width: "18rem" }}
               key={note._id || idx}
             >
-              <img src="..." className="card-img-top" alt="..." />
+              {/* <img src="..." className="card-img-top" alt="..." /> */}
               <div className="card-body">
                 <h5 className="card-title">{note.title}</h5>
                 <p className="card-text">{note.codeDetails}</p>
-                <Link to={`/editNotes/${note._id}`}  className="btn btn-primary">
+                <Link to={`/editNotes/${note._id}`}  className="button-link">
                   Edit
                 </Link>
                 <button 
                   onClick={() => handleDelete(note._id)} 
-                  className="btn btn-primary">
+                  className="button lite">
                   Delete
                 </button>
               </div>
@@ -98,17 +98,17 @@ function Dashboard() {
         <h4>Manage and organize your JavaScript learning notes.</h4>
         <ul>
           <li>
-            <Link to="/newNote" className="button">
+            <Link to="/newNote" className="button-link">
               Create New Note
             </Link>
           </li>
           <li>
-            <Link to="/allnotes" className="button lite" onClick={openAllNotes}>
+            <Link to="/allnotes" className="button-link lite" onClick={openAllNotes}>
               All Notes
             </Link>
           </li>
           <li>
-            <Link to="/archive" className="button lite">
+            <Link to="/archive" className="button-link lite">
               Archive
             </Link>
           </li>
@@ -118,9 +118,9 @@ function Dashboard() {
       <div className="sidebar">
         <h1>Sidebar</h1>
         <ul>
-          <li>libraries</li>
-          <li>notes</li>
-          <li>settings</li>
+          <li className="button">libraries</li>
+          <li className="button">notes</li>
+          <li className="button">settings</li>
         </ul>
       </div>
 

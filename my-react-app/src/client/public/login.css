@@ -67,7 +67,7 @@ body {
 }
 
 button {
-  font-size: 18px;
+  font-size: 16px;
   color: #EF802F;
   font-family: inherit;
   font-weight: 800;
@@ -145,7 +145,7 @@ hr{
         width: 100%;       
 }
 .button-link {
-  font-size: 20px;
+  font-size: 16px;
   color: #FFCC57;
   font-family: inherit;
   font-weight: 800;

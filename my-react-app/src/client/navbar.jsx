@@ -40,7 +40,7 @@ export default function Navbar() {
             }}
             alt="site logo"
           />
-          <Link className="navbar-brand" to="/Dashboard">
+          <Link className="navbar-brand " to="/Dashboard">
             JSVault
           </Link>
           <div className="vr"></div>
@@ -60,20 +60,21 @@ export default function Navbar() {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link
-                  className="nav-link active"
+                  className="nav-link active button-link lite"
                   aria-current="page"
+                  style={{color: "#EF802F",marginLeft:"3px"}}
                   to="/dashboard"
                 >
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/newNote">
+                <Link className="nav-link button-link lite" to="/newNote">
                   New Note
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="#" onClick={Logout}>
+                <Link className="nav-link button-link lite" to="#" onClick={Logout}>
                   Logout
                 </Link>
               </li>
@@ -81,12 +82,12 @@ export default function Navbar() {
 
             <form className="d-flex" role="search">
               <input
-                className="form-control me-2"
+                className="form-control me-2 input"
                 type="search"
-                placeholder="Search"
+                placeholder="Search for notes"
                 aria-label="Search"
               />
-              <button className="btn btn-outline-success" type="submit">
+              <button className="button" type="submit">
                 Search
               </button>
             </form>
