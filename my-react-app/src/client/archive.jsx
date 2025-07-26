@@ -5,9 +5,10 @@ export default function Archive() {
   const [archivedNotes, setArchivedNotes] = useState([]);
 
   useEffect(() => {
-    const fetchArchivedNotes = async () => {
+    const fetchArchivedNotes = async (req, res) => {
       try {
-        const response = await axios.get("http://localhost:5174/archivednotes", {
+        // id = req.user._id;
+        const response = await axios.get(`http://localhost:5174/archivedNotes`, {
           withCredentials: true,
         });
         setArchivedNotes(response.data);

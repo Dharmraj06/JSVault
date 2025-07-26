@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 function Dashboard() {
   const navigate = useNavigate();
   const [recentNotes, setNotes] = useState([]);
-  const [userData, setUserData] = useState(null); // store user data
+  const [userData, setUserData] = useState(null);  // store user data
+  let userId;
 
   const handleDelete = async (noteId) => {
     try {
@@ -23,40 +24,54 @@ function Dashboard() {
         }
       );
 
-      if (res.status === 200) {
-        console.log("Note deleted successfully:", res.data);
-        setNotes((prevNotes) =>
-          prevNotes.filter((note) => note._id !== noteId)
-        );
+    if (res.status === 200) {
+      console.log("Note deleted successfully:", res.data);
+      setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+    }
+  } catch (error) {
+    if (error.response?.status === 401) {
+      alert("Please login to delete notes");
+      window.location.href = '/login';
+    } else {
+      console.error("Error deleting note:", error);
+      alert("Failed to delete note. Please try again later.");
+    }
+  }
+};
+
+const handleArchive = async(noteId) => {
+    try{
+      const res = await axios.post(`http://localhost:5174/archiveNote/${noteId}`, {}, {
+        withCredentials: true,
+      });
+      if(res.status === 200){
+        console.log(`Note archived: ${noteId}`);
+        setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+      } else {
+        console.log("Failed to archive the note.");
       }
     } catch (error) {
-      if (error.response?.status === 401) {
-        alert("Please login to delete notes");
-        window.location.href = "/login";
-      } else {
-        console.error("Error deleting note:", error);
-        alert("Failed to delete note. Please try again later.");
-      }
+      console.error("Error in archiving the note: ", error);
     }
-  };
+};
 
   useEffect(() => {
     const fetchRecentNotes = async () => {
       try {
-        const res = await axios.post(
-          "http://localhost:5174/dashboard",
-          {},
-          { withCredentials: true }
-        );
+        // console.log("user data:", res.data);
+        console.log("user data: ",userData);
+        const res = await axios.post("http://localhost:5174/dashboard",{},{withCredentials: true,});
 
         console.log("Type of res.data:", typeof res.data);
         console.log("Is array?", Array.isArray(res.data));
         console.log("res.data:", res.data);
+        userId = res.data[0].userId;
 
         if (res.status === 200) {
           setUserData(res.data.user);
           setNotes(res.data);
           console.log("Recent Notes:", res.data);
+          console.log("user id ye hai:", userId);
         } else {
           console.error("Failed to fetch recent notes:", res.statusText);
           alert("Failed to fetch recent notes. Please try again later.");
@@ -106,7 +121,10 @@ function Dashboard() {
                   >
                     Delete
                   </button>
-                </div>
+                  <button onClick={() => handleArchive(note._id)} className="btn btn-primary">
+                  Archive
+                </button>
+              </div>
               </div>
             ))}
           </ul>

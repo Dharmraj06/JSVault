@@ -27,6 +27,7 @@ function Layout() {
         <Route path="/newNote" element={<NewNote />} />
         <Route path="/editNotes/:id" element={<EditNote />} />
         <Route path="/AllNotes" element={<AllNotes />} />
+        <Route path="/archivedNotes" element={<Archive />} />
         <Route path="/Trash" element={<Trash />} />
         
       </Routes>
