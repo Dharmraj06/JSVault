@@ -294,6 +294,7 @@ app.post("/logout", (req, res) => {
   });
 });
 
+
 app.get("/AllNotes", ensureauth, async (req, res) => {
   try {
     const allnotes = await Note.find({ userId: req.user._id }).sort({

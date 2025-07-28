@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +11,7 @@ function Dashboard() {
   const [recentNotes, setNotes] = useState([]);
   const [userData, setUserData] = useState(null);  // store user data
   let userId;
+  const [langlist,setlanglist] = useState([]);
 
   const handleDelete = async (noteId) => {
     try {
@@ -62,8 +64,6 @@ const handleArchive = async(noteId) => {
         console.log("user data: ",userData);
         const res = await axios.post("http://localhost:5174/dashboard",{},{withCredentials: true,});
 
-        console.log("Type of res.data:", typeof res.data);
-        console.log("Is array?", Array.isArray(res.data));
         console.log("res.data:", res.data);
         userId = res.data[0].userId;
 
@@ -71,7 +71,7 @@ const handleArchive = async(noteId) => {
           setUserData(res.data.user);
           setNotes(res.data);
           console.log("Recent Notes:", res.data);
-          console.log("user id ye hai:", userId);
+          
         } else {
           console.error("Failed to fetch recent notes:", res.statusText);
           alert("Failed to fetch recent notes. Please try again later.");
@@ -81,12 +81,44 @@ const handleArchive = async(noteId) => {
         alert("Failed to fetch recent notes. Please try again later.");
       }
     };
+
+    const fetchAllNotes = async () => {
+      try {
+        const res = await axios.get("http://localhost:5174/AllNotes",{withCredentials: true});
+
+        console.log("res.data for all notes in fetchAllNotes:",res.data);
+
+        if(res.status === 200){
+          const langlist = new Set();
+
+          res.data.map(note => {
+            langlist.add(note.language);
+          })
+
+          setlanglist(Array.from(langlist));
+          console.log("language list:",Array.from(langlist));
+        } else{
+          console.error("Failed to fetch recent notes:", res.statusText);
+          alert("Failed to fetch language list. Please try again later.");
+        }
+      } catch (error) {
+        console.error("Error fetching Notes:", error);
+        alert("Failed to fetch Notes. Please try again later.");
+      }
+    }
     fetchRecentNotes();
+    fetchAllNotes();
   }, []);
 
   function openAllNotes() {
     navigate("/AllNotes", {
       state: { user: userData },
+    });
+  }
+
+  function openLanguage(language) {
+    navigate(`/language/${language}`,{
+      state: {user: userData},
     });
   }
 
@@ -99,7 +131,7 @@ const handleArchive = async(noteId) => {
             {recentNotes.map((note, idx) => (
               <div
                 className="card"
-                style={{ width: "18rem", height: "auto" }}
+                style={{ width: "20rem", height: "auto" }}
                 key={note._id || idx}
               >
                 {/* <img src="..." className="card-img-top" alt="..." /> */}
@@ -117,11 +149,11 @@ const handleArchive = async(noteId) => {
                   </Link>
                   <button
                     onClick={() => handleDelete(note._id)}
-                    className="button lite"
+                    className="button-link lite"
                   >
                     Delete
                   </button>
-                  <button onClick={() => handleArchive(note._id)} className="btn btn-primary">
+                  <button onClick={() => handleArchive(note._id)} className="button-link lite">
                   Archive
                 </button>
               </div>
@@ -149,7 +181,7 @@ const handleArchive = async(noteId) => {
               </Link>
             </li>
             <li id="archive">
-              <Link to="/archive" className="button-link lite">
+              <Link to="/archivedNotes" className="button-link lite">
                 Archive
               </Link>
             </li>
@@ -159,9 +191,16 @@ const handleArchive = async(noteId) => {
         <div className="sidebar">
           <h1> </h1>
           <ul>
-            <li className="button">libraries</li>
-            <li className="button">notes</li>
-            <li className="button">settings</li>
+            {/* <li className="button">libraries</li> */}
+            
+              {
+                langlist.map(lang => {
+                  return <li className="button lite"><button className="button lite" onClick={() => openLanguage(lang)}>{lang}</button></li>
+                })
+              }
+            
+            <li className="button"><button className="button lite">trash</button></li>
+            <li className="button"><button className="button lite">settings</button></li>
           </ul>
         </div>
       </div>
