@@ -182,7 +182,6 @@ const handleArchive = async(noteId) => {
             </li>
             <li id="archive">
               <Link to="/archivedNotes" className="button-link lite">
-              <Link to="/archivedNotes" className="button-link lite">
                 Archive
               </Link>
             </li>
