@@ -29,7 +29,7 @@ function Layout() {
         <Route path="/editNotes/:id" element={<EditNote />} />
         <Route path="/AllNotes" element={<AllNotes />} />
         <Route path="/archivedNotes" element={<Archive />} />
-        <Route path="/Trash" element={<Trash />} />
+        <Route path="/trash/:id" element={<Trash />} />
       
       </Routes>
 

@@ -29,6 +29,11 @@ const noteSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isTrashed: {
+        default: false,
+        type: Boolean,
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
