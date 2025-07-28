@@ -8,7 +8,7 @@ export default function Trash() {
   useEffect(() => {
     const fetchDeleteNotes = async () => {
       try {
-        const response = await axios.get("http://localhost:5174/archivednotes", {
+        const response = await axios.get("http://localhost:5174/trashedNotes", {
           withCredentials: true,
         });
         setDeleteNotes(response.data);
@@ -20,10 +20,20 @@ export default function Trash() {
     fetchDeleteNotes();
   }, []);
 
+    const handleRestore = async(id) => {
+      try{
+        await axios.put(`http://localhost:5174/restoreNote/${id}`, {}, {
+          withCredentials: true,
+        });
+        setDeleteNotes((prev) => prev.filter((note) => note._id !== id));
+      } catch (err) {
+        console.error("Error restoring note:", err);
+      }
+    }
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5174/deleteNote/${id}`, {
+      await axios.post(`http://localhost:5174/deleteNote/${id}`,{}, {
         withCredentials: true,
       });
       setDeleteNotes((prev) => prev.filter((note) => note._id !== id));
@@ -34,7 +44,7 @@ export default function Trash() {
 
   return (
     <div className="container">
-      <h2>Archived Notes</h2>
+      <h2>Trash</h2>
       {deletedNotes.length === 0 ? (
         <p>No Deleted Notes Available.</p>
       ) : (
@@ -43,9 +53,9 @@ export default function Trash() {
             <div className="card-body">
               <h5 className="card-title">{note.title}</h5>
               <p className="card-text">{note.codeDetails}</p>
-              <Link to={`/editNotes/${note._id}`} className="button-link">
-                Edit
-              </Link>
+              <button onClick={() => handleRestore(note._id)} className="button-link">
+                Restore
+              </button>
               <button onClick={() => handleDelete(note._id)} className="button lite">
                 Delete
               </button>

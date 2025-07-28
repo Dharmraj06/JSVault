@@ -16,7 +16,7 @@ function Dashboard() {
   const handleDelete = async (noteId) => {
     try {
       const res = await axios.post(
-        `http://localhost:5174/deleteNote/${noteId}`,
+        `http://localhost:5174/tempDeleteNote/${noteId}`,
         {},
         {
           withCredentials: true,
@@ -181,6 +181,7 @@ const handleArchive = async(noteId) => {
               </Link>
             </li>
             <li id="archive">
+              <Link to="/archivedNotes" className="button-link lite">
               <Link to="/archivedNotes" className="button-link lite">
                 Archive
               </Link>

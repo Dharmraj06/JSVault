@@ -153,7 +153,7 @@ function ensureauth(req, res, next) {
 app.post("/dashboard", ensureauth, async (req, res) => {
   console.log("userid is :", req.user._id);
   try {
-    const recentnotes = await Note.find({ userId: req.user._id, isArchived: false })
+    const recentnotes = await Note.find({ userId: req.user._id, isArchived: false, isTrashed: false })
       .sort({
         createdAt: -1,
       })
@@ -272,17 +272,47 @@ app.post("/unarchiveNote/:id", ensureauth, async (req, res) => {
   }
 });
 
-app.post("/deleteNote/:id", ensureauth, async (req, res) => {
+app.post("/tempDeleteNote/:id", ensureauth, async (req, res) => {
   const noteId = req.params.id;
   try {
-    const note = await Note.findByIdAndDelete(noteId);
+    const note = await Note.findById(noteId);
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
     }
+    note.isTrashed = true;
+    await note.save();
     res.status(200).json({ message: "Note deleted successfully" });
   } catch (error) {
     console.error("Error deleting note:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/trashedNotes", ensureauth, async(req, res) => {
+  try{
+    const userId = req.user._id;
+    const trashedNotes = await Note.find({userId, isTrashed: true});
+    if(!trashedNotes){
+      console.log("no trashed notes");
+      res.status(404).json({message: "No trashed notes"});
+    }
+    res.status(200).json(trashedNotes);
+  } catch (error) {
+    console.error("error in trashing notes", error);
+    res.status(500).json({message: "internal server error"});
+  }
+});
+
+app.put("/restoreNote/:id", ensureauth, async (req, res) => {
+  const noteId = req.params.id;
+  try{
+    const note = await Note.findById(noteId);
+    note.isTrashed = false;
+    await note.save();
+    res.status(200).json({message: "Note restored successfully", note});
+  } catch (error) {
+    console.error("error in restoring note", error);
+    res.status(500).json({message: "Internal server error"});
   }
 });
 
@@ -297,7 +327,7 @@ app.post("/logout", (req, res) => {
 
 app.get("/AllNotes", ensureauth, async (req, res) => {
   try {
-    const allnotes = await Note.find({ userId: req.user._id }).sort({
+    const allnotes = await Note.find({ userId: req.user._id, isTrashed: false }).sort({
       createdAt: -1,
     });
     console.log("all notes are as follow ---------", allnotes);
@@ -309,6 +339,7 @@ app.get("/AllNotes", ensureauth, async (req, res) => {
 });
 
 app.post("/deleteNote/:id", ensureauth, async (req, res) => {
+  console.log("server tak pohch gaya hun");
   const noteId = req.params.id;
   try {
     const note = await Note.findByIdAndDelete(noteId);
