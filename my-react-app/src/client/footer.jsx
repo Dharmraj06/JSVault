@@ -5,13 +5,8 @@ export default function Footer() {
     return (
         <footer className="footer">
             <div className="footer-content">
-                <p>&copy; 2025<br />
+                <p style={{ textAlign: "center" }}>&copy; 2025 <br />
                     The JSVault Team. All rights reserved.</p>
-                <ul className="footer-links">
-                    {/* <li><Link to="/privacy">Privacy Policy</Link></li>
-                    <li><Link to="/terms">Terms of Service</Link></li>
-                    <li><Link to="/contact">Contact Us</Link></li> */}
-                </ul>
             </div>
         </footer>
     );

@@ -136,7 +136,7 @@ const handleArchive = async(noteId) => {
               >
                 {/* <img src="..." className="card-img-top" alt="..." /> */}
                 <div className="card-body">
-                  <h5 className="card-title">{note.title}</h5>
+                  <h5 className="card-title" style={{height: "72px"}}>{note.title}</h5>
                   <hr />
                   <p className="card-text">
                     {note.codeDetails.length > 200
@@ -199,12 +199,11 @@ const handleArchive = async(noteId) => {
                 })
               }
           <hr />
-            <li className="button"><button className="button lite" onClick={handleDelete}>trash</button></li>
+            <li className="button"><button className="button lite" onClick={() => navigate("/Trash")}>trash</button></li>
             <li className="button"><button className="button lite" >settings</button></li>
           </ul>
         </div>
       </div>
-      <hr />
     </>
   );
 }

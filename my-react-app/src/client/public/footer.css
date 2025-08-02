@@ -1,0 +1,24 @@
+.footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFCC57;
+    height: 90px; /* OR height: 110px; */
+}
+
+
+.footer-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fbd57b;
+    width: 1118px;
+    height: 60px;
+    border-radius: 25px;
+}
+
+p{
+    margin-bottom: 0px;
+}
