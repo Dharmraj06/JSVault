@@ -259,14 +259,15 @@ function Dashboard() {
               </div>
             </div>
 
-            <div className="popup-description">
-              <h4 className="description-heading">Code Details:</h4>
-              <p>{selectedNote.codeDetails}</p>
-            </div>
 
             <div className="popup-code-block">
               <h4 className="code-heading">Code:</h4>
               <pre>{selectedNote.code}</pre>
+            </div>
+            
+            <div className="popup-description">
+              <h4 className="description-heading">Code Details:</h4>
+              <p>{selectedNote.codeDetails}</p>
             </div>
           </div>
         </div>
