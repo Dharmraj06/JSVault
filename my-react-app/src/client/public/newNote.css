@@ -1,0 +1,20 @@
+.newNote-container{
+    margin: 40px;
+    
+}
+
+#newnote-h1{
+    margin: 20px;
+    font-size: 45px;
+    margin-top: 50px;
+}
+
+.form-group{
+    margin: 20px;
+    width: 550px;
+}
+
+.newnote-type{
+    display: flex;
+    flex-direction: row;
+}
