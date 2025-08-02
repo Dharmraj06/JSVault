@@ -33,11 +33,12 @@ export default function NewNote() {
   };
 
   return (
-    <div className="container">
-      <h1>Create a New Note</h1>
+    <div>
+      <div className="newNote-container"></div>
+      <h1 id='newnote-h1'>Create a New Note</h1>
       <form onSubmit={handleSubmit}>
         {/* Title Input */}
-        <div className="form-group">
+        <div className="form-group newnote-title">
           <label htmlFor="noteTitle">Title</label>
           <input
             type="text"
@@ -50,8 +51,8 @@ export default function NewNote() {
           <p>Enter a title for your note.</p>
         </div>
 
-        
-        <div className="form-group">
+        <div className='newnote-type'>
+        <div className="form-group ">
           <label htmlFor="languageType">Language</label>
           <select
             id="languageType"
@@ -81,7 +82,7 @@ export default function NewNote() {
           />
           <p>Use tags to categorize your notes.</p>
         </div>
-
+      </div>
         
         <div className="form-group">
           <label htmlFor="code">Code</label>
@@ -112,7 +113,7 @@ export default function NewNote() {
 
         
         <div className="form-group mt-3">
-          <Link to="/dashboard" className="button lite">Cancel</Link>
+          <Link to="/dashboard" className="button-link lite">Cancel</Link>
           <button type="submit" className="button ml-2">Save Note</button>
         </div>
       </form>
