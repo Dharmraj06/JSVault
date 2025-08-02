@@ -52,7 +52,9 @@ export default function Trash() {
           <div className="card" style={{ width: "18rem" }} key={note._id}>
             <div className="card-body">
               <h5 className="card-title">{note.title}</h5>
-              <p className="card-text">{note.codeDetails}</p>
+              <p className="card-text">{note.codeDetails.length > 200
+                      ? `${note.codeDetails.slice(0, 200)}...`
+                      : note.codeDetails}</p>
               <button onClick={() => handleRestore(note._id)} className="button-link">
                 Restore
               </button>

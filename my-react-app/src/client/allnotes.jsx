@@ -52,7 +52,9 @@ export default function AllNotes() {
                         {/* //<img src="..." className="card-img-top" alt="..." /> */}
                         <div className="card-body">
                           <h5 className="card-title">{note.title}</h5>
-                          <p className="card-text">{note.codeDetails}</p>
+                          <p className="card-text">{note.codeDetails.length > 200
+                      ? `${note.codeDetails.slice(0, 200)}...`
+                      : note.codeDetails}</p>
                           <Link
                             to={`/editNotes/${note._id}`}
                             className="button"
