@@ -155,7 +155,7 @@ function Dashboard() {
                     onClick={() => handleNoteClick(note)}
                   >
                     <div className="card-body">
-                      <h5 className="card-title">{note.title}</h5>
+                      <h5 className="card-title" style={{height:"72px"}}>{note.title}</h5>
                       <hr />
                       <p className="card-text">
                         {note.codeDetails.length > 200
