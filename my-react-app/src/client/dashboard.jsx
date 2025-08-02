@@ -198,9 +198,9 @@ const handleArchive = async(noteId) => {
                   return <li className="button lite"><button className="button lite" onClick={() => openLanguage(lang)}>{lang}</button></li>
                 })
               }
-            
-            <li className="button"><button className="button lite">trash</button></li>
-            <li className="button"><button className="button lite">settings</button></li>
+          <hr />
+            <li className="button"><button className="button lite" onClick={handleDelete}>trash</button></li>
+            <li className="button"><button className="button lite" >settings</button></li>
           </ul>
         </div>
       </div>
