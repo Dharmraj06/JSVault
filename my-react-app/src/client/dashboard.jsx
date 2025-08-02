@@ -234,7 +234,7 @@ function Dashboard() {
           </ul>
         </div>
       </div>
-      <hr />
+      
 
       {isPopupOpen && selectedNote && (
         <div className="popup-overlay" onClick={handleClosePopup}>
