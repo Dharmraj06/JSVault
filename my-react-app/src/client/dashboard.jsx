@@ -221,30 +221,16 @@ function Dashboard() {
         <div className="sidebar">
           <h1> </h1>
           <ul>
-            {langlist.map((lang, index) => {
-              return (
-                <li className="button lite" key={index}>
-                  <button
-                    className="button lite"
-                    onClick={() => openLanguage(lang)}
-                  >
-                    {lang}
-                  </button>
-                </li>
-              );
-            })}
-            <hr />
-            <li className="button">
-              <button
-                className="button lite"
-                onClick={() => navigate("/Trash")}
-              >
-                trash
-              </button>
-            </li>
-            <li className="button">
-              <button className="button lite">settings</button>
-            </li>
+            {/* <li className="button">libraries</li> */}
+            
+              {
+                langlist.map(lang => {
+                  return <li className="button lite"><button className="button lite" onClick={() => openLanguage(lang)}>{lang}</button></li>
+                })
+              }
+          <hr />
+            <li className="button"><button className="button lite" onClick={() => navigate("/Trash")}>trash</button></li>
+            <li className="button"><button className="button lite" >settings</button></li>
           </ul>
         </div>
       </div>
