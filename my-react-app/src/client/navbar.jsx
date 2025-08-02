@@ -3,9 +3,13 @@ import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function Navbar() {
   const navigate = useNavigate();
+
+  const [searchvalue, setSearchValue] = useState("");
+  const [allnotes, setNotes] = useState([]);
 
   const Logout = async () => {
     try {
@@ -16,7 +20,7 @@ export default function Navbar() {
       );
 
       if (res.status === 200) {
-        console.log("user logged out!")
+        console.log("user logged out!");
         navigate("/", {
           state: { user: res.data.user },
         });
@@ -26,9 +30,42 @@ export default function Navbar() {
     }
   };
 
+  const searchNotes = async () => {
+    try {
+      const res = await axios.get("/AllNotes", {}, { withCrendentials: true });
+
+      if (res.status === 200) {
+        setNotes(res.data);
+        console.log("fetched notes in navbar:-", res.data);
+      } else{
+		console.error("error in getting notes from server:",res.status);
+	  }
+    } catch (error) {
+      console.log("error in fetching all notes in navbar :- ", error);
+      alert("error in fetching all notes in navbar");
+    }
+
+
+	const ans = searchResult(searchvalue,allnotes);
+	console.log("search result:-",ans);
+
+  };
+
+  function searchResult(search, notes) {
+    let ans = [];
+
+    notes.map((note) => {
+      if (note.title.toLowerCase().includes(search.toLowerCase())) {
+        ans.push(note);
+      }
+    });
+
+    return ans; 
+  }
+
   return (
     <>
-      <nav className="navbar navbar-expand-lg  custom-navbar" >
+      <nav className="navbar navbar-expand-lg  custom-navbar">
         <div className="container-fluid">
           <img
             src={logo}
@@ -37,7 +74,7 @@ export default function Navbar() {
               height: "auto",
               marginLeft: "0px",
               marginRight: "20px",
-              borderRadius:"7px"
+              borderRadius: "7px",
             }}
             alt="site logo"
           />
@@ -63,19 +100,28 @@ export default function Navbar() {
                 <Link
                   className="nav-link active button-link navbutton lite"
                   aria-current="page"
-                  style={{color: "#bd6322ff",marginLeft:"3px"}}
+                  style={{ color: "#bd6322ff", marginLeft: "3px" }}
                   to="/dashboard"
                 >
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link button-link navbutton lite" to="/newNote" style={{color: "#bd6322ff"}}>
+                <Link
+                  className="nav-link button-link navbutton lite"
+                  to="/newNote"
+                  style={{ color: "#bd6322ff" }}
+                >
                   New Note
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link button-link navbutton lite" to="#" onClick={Logout} style={{color: "#bd6322ff"}}>
+                <Link
+                  className="nav-link button-link navbutton lite"
+                  to="#"
+                  onClick={Logout}
+                  style={{ color: "#bd6322ff" }}
+                >
                   Logout
                 </Link>
               </li>
@@ -87,8 +133,9 @@ export default function Navbar() {
                 type="search"
                 placeholder="Search for notes"
                 aria-label="Search"
+                onChange={(e) => setSearchValue(e.target.value)}
               />
-              <button className="button" type="submit">
+              <button className="button" type="submit" onClick={searchNotes}>
                 Search
               </button>
             </form>

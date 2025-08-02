@@ -156,10 +156,8 @@ app.post("/dashboard", ensureauth, async (req, res) => {
     const recentnotes = await Note.find({ userId: req.user._id, isArchived: false, isTrashed: false })
       .sort({
         createdAt: -1,
-      })
-      .limit(3);
+      }).limit(3);
 
-    //console.log(recentnotes);
     res.status(200).json(recentnotes);
   } catch (error) {
     console.error("Error fetching recentnotes:", error);
@@ -324,6 +322,7 @@ app.post("/logout", (req, res) => {
   });
 });
 
+
 app.get("/AllNotes", ensureauth, async (req, res) => {
   try {
     const allnotes = await Note.find({ userId: req.user._id, isTrashed: false }).sort({
@@ -338,7 +337,7 @@ app.get("/AllNotes", ensureauth, async (req, res) => {
 });
 
 app.post("/deleteNote/:id", ensureauth, async (req, res) => {
-  console.log("server tak pohch gaya hun");
+  
   const noteId = req.params.id;
   try {
     const note = await Note.findByIdAndDelete(noteId);

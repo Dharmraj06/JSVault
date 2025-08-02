@@ -12,6 +12,7 @@ import AllNotes from '../client/allnotes.jsx';
 import { useLocation } from "react-router-dom";
 import Archive from '../client/archive.jsx';
 import Trash from '../client/trash.jsx';
+import LangList from "../client/language.jsx";
 
 function Layout() {
   const location = useLocation();
@@ -29,11 +30,12 @@ function Layout() {
         <Route path="/editNotes/:id" element={<EditNote />} />
         <Route path="/AllNotes" element={<AllNotes />} />
         <Route path="/archivedNotes" element={<Archive />} />
-        <Route path="/trash/:id" element={<Trash />} />
+        <Route path="/Trash" element={<Trash />} />
+        <Route path="/language/:language" element={<LangList />} />
       
       </Routes>
 
-      {<Footer />}
+      <Footer />
     </>
   );
 }

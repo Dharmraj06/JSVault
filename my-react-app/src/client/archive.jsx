@@ -20,7 +20,7 @@ export default function Archive() {
     fetchArchivedNotes();
   }, []);
 
-  const handlearchive = async(noteId) => {
+  const handleArchive = async(noteId) => {
     try{
       const res = await axios.post(`http://localhost:5174/unarchiveNote/${noteId}`, {}, {
         withCredentials: true,
