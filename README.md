@@ -130,25 +130,6 @@ npm start
 
 ---
 
-## Environment Variables
-
-Create a `.env` file inside the project.
-
-```env
-PORT=5174
-
-MONGODB_URI=your_mongodb_connection_string
-
-SESSION_SECRET=your_session_secret
-
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-GEMINI_API_KEY=your_gemini_api_key
-```
-
----
-
 ## Folder Structure
 
 ```
@@ -166,18 +147,6 @@ JSVault
 ├── package.json
 └── README.md
 ```
-
----
-
-## Future Improvements
-
-- Note sharing
-- Markdown support
-- Rich text editor
-- Folder organization
-- Deploy online
-- Dark mode
-
 ---
 
 ## License
