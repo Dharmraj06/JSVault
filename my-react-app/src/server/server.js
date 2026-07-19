@@ -524,18 +524,18 @@ ${code || "No code provided"}`;
 
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const timeoutMs = 30000;
+    const timeout = 30000;// in ms
 
-    const generatePromise = ai.models.generateContent({
+    const generateres = ai.models.generateContent({
       model: "gemini-3.5-flash",
       contents: prompt,
     });
 
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("Summary request timed out")), timeoutMs);
+    const timeoutres = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Summary request timed out")), timeout);
     });
 
-    const response = await Promise.race([generatePromise, timeoutPromise]);
+    const response = await Promise.race([generateres, timeoutres]);
     const summary = response.text?.trim();
 
     if (!summary) {
