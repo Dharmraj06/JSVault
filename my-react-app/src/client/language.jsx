@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { getNoteSummary } from "./noteHelpers";
 
 export default function LangList() {
     const { language } = useParams();
@@ -81,40 +82,37 @@ export default function LangList() {
     }, [language]); // re-run if param changes
 
     return (
-        <div className="language-container">
+        <div className="newNote-container">
             <h2>Notes for: {language}</h2>
-            <ul className="list language">
+            <div className="notes-grid">
                 {allnotes.map((note, i) => (
-                    <li key={i}>
-                        <div className="card" style={{ width: "20rem", height: "auto" }}>
-                            <div className="card-body">
-                                <h5 className="card-title">{note.title}</h5>
-                                <hr />
-                                <p className="card-text">
-                                    {note.codeDetails.length > 200
-                                        ? `${note.codeDetails.slice(0, 200)}...`
-                                        : note.codeDetails}
-                                </p>
+                    <div className="card" key={note._id || i}>
+                        <div className="card-body">
+                            <h5 className="card-title">{note.title}</h5>
+                            <p className="card-language">{note.language}</p>
+                            <hr />
+                            <p className="card-text">{getNoteSummary(note)}</p>
+                            <div className="form-actions mt-3">
                                 <Link to={`/editNotes/${note._id}`} className="button-link">
                                     Edit
                                 </Link>
                                 <button
                                     onClick={() => handleDelete(note._id)}
-                                    className="button-link lite"
+                                    className="button-link lite ml-2"
                                 >
                                     Delete
                                 </button>
                                 <button
                                     onClick={() => handleArchive(note._id)}
-                                    className="button-link lite"
+                                    className="button-link lite ml-2"
                                 >
                                     Archive
                                 </button>
                             </div>
                         </div>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 }

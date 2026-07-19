@@ -43,27 +43,31 @@ export default function Trash() {
   };
 
   return (
-    <div className="container">
+    <div className="newNote-container">
       <h2>Trash</h2>
       {deletedNotes.length === 0 ? (
         <p>No Deleted Notes Available.</p>
       ) : (
-        deletedNotes.map((note) => (
-          <div className="card" style={{ width: "18rem" }} key={note._id}>
-            <div className="card-body">
-              <h5 className="card-title">{note.title}</h5>
-              <p className="card-text">{note.codeDetails.length > 200
-                      ? `${note.codeDetails.slice(0, 200)}...`
-                      : note.codeDetails}</p>
-              <button onClick={() => handleRestore(note._id)} className="button-link">
-                Restore
-              </button>
-              <button onClick={() => handleDelete(note._id)} className="button lite">
-                Delete
-              </button>
+        <div className="notes-grid">
+          {deletedNotes.map((note) => (
+            <div className="card" key={note._id}>
+              <div className="card-body">
+                <h5 className="card-title">{note.title}</h5>
+                <p className="card-text">{note.codeDetails.length > 200
+                        ? `${note.codeDetails.slice(0, 200)}...`
+                        : note.codeDetails}</p>
+                <div className="form-actions mt-3">
+                  <button onClick={() => handleRestore(note._id)} className="button-link">
+                    Restore
+                  </button>
+                  <button onClick={() => handleDelete(note._id)} className="button-link lite ml-2">
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );

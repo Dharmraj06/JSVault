@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 //import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { getNoteSummary } from "./noteHelpers";
 
 export default function AllNotes() {
   //const navigate = useNavigate();
@@ -79,32 +80,25 @@ const handleArchive = async(noteId) => {
   }, []);
 
   return (
-    <div className="language-container">
-      <ul className="list language">
+    <div className="newNote-container">
+      <h1>All Notes</h1>
+      <ul className="list language" style={{ paddingLeft: 0 }}>
         {alllanguge &&
           Array.from(alllanguge).map((language, idx) => (
-            <li key={idx}>
-              {language}
-              <ul>
+            <li key={idx} style={{ marginBottom: "2rem" }}>
+              <h3 style={{ textTransform: "uppercase", borderBottom: "2px solid #FFCC57", paddingBottom: "5px" }}>{language}</h3>
+              <div className="notes-grid" style={{ padding: "20px 0" }}>
                 {allnotes
                   .filter((note) => note.language === language)
                   .map((note, i) => (
-                    <li key={i}>
-                      <div
-                        className="card"
-                        style={{ width: "20rem", height: "auto" }}
-                        key={note._id || idx}
-                      >
-                        {/* <img src="..." className="card-img-top" alt="..." /> */}
-                        <div className="card-body">
-                          <h5 className="card-title">{note.title}</h5>
-                          <hr />
-                          <p className="card-text">
-                            {note.codeDetails.length > 200
-                              ? `${note.codeDetails.slice(0, 200)}...`
-                              : note.codeDetails}
-                          </p>
+                    <div className="card" key={note._id || i}>
+                      <div className="card-body">
+                        <h5 className="card-title">{note.title}</h5>
+                        <p className="card-language">{note.language}</p>
+                        <hr />
+                        <p className="card-text">{getNoteSummary(note)}</p>
 
+                        <div style={{ marginTop: "10px" }}>
                           <Link
                             to={`/editNotes/${note._id}`}
                             className="button-link"
@@ -113,21 +107,21 @@ const handleArchive = async(noteId) => {
                           </Link>
                           <button
                             onClick={() => handleDelete(note._id)}
-                            className="button-link lite"
+                            className="button-link lite ml-2"
                           >
                             Delete
                           </button>
                           <button
                             onClick={() => handleArchive(note._id)}
-                            className="button-link lite"
+                            className="button-link lite ml-2"
                           >
                             Archive
                           </button>
                         </div>
                       </div>
-                    </li>
+                    </div>
                   ))}
-              </ul>
+              </div>
             </li>
           ))}
       </ul>

@@ -1,15 +1,49 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LANGUAGES } from "./languages";
+import CodeEditor from "./CodeEditor";
 
 export default function NewNote() {
   const [noteTitle, setNoteTitle] = React.useState("");
-  const [languageType, setLanguageType] = React.useState("python");
+  const [languageType, setLanguageType] = React.useState("JavaScript");
   const [tags, setTags] = React.useState("");
   const [code, setCode] = React.useState("");
   const [codeDetails, setCodeDetails] = React.useState("");
+  const [summary, setSummary] = React.useState("");
+  const [summaryError, setSummaryError] = React.useState("");
+  const [isGeneratingSummary, setIsGeneratingSummary] = React.useState(false);
 
   const navigate = useNavigate();
+
+  const handleGenerateSummary = async () => {
+    setSummaryError("");
+    setIsGeneratingSummary(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5174/api/notes/generate-summary",
+        {
+          title: noteTitle,
+          language: languageType,
+          code,
+          description: codeDetails,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setSummary(response.data.summary);
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        "Failed to generate summary. Please try again or write one manually.";
+      setSummaryError(message);
+    } finally {
+      setIsGeneratingSummary(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,9 +51,10 @@ export default function NewNote() {
     const noteData = {
       title: noteTitle,
       language: languageType,
-      tags,
+      tags: tags.split(",").map((t) => t.trim()),
       code,
       codeDetails,
+      summary,
     };
 
     axios
@@ -64,11 +99,11 @@ export default function NewNote() {
               value={languageType}
               onChange={(e) => setLanguageType(e.target.value)}
             >
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="csharp">C#</option>
+              {LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
             </select>
             <p>Select the programming language for your code snippet.</p>
           </div>
@@ -91,14 +126,11 @@ export default function NewNote() {
         <div className="code-row">
           <div className="form-group">
             <label htmlFor="code">Code</label>
-            <textarea
-              id="code"
-              className="form-control"
-              rows="10"
-              placeholder="Write your code here..."
+            <CodeEditor
               value={code}
-              onChange={(e) => setCode(e.target.value)}
-            ></textarea>
+              onChange={setCode}
+              language={languageType}
+            />
             <p>Write your code snippet here.</p>
           </div>
 
@@ -116,8 +148,30 @@ export default function NewNote() {
           </div>
         </div>
 
+        <div className="form-group newnote-title">
+          <label htmlFor="summary">Summary</label>
+          <textarea
+            id="summary"
+            className="form-control"
+            rows="4"
+            placeholder="Generate a summary or write your own..."
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+          ></textarea>
+          <p>Briefly describe what the code does and where it is useful.</p>
+          <button
+            type="button"
+            className="button lite"
+            onClick={handleGenerateSummary}
+            disabled={isGeneratingSummary}
+          >
+            {isGeneratingSummary ? "Generating..." : "Generate Summary"}
+          </button>
+          {summaryError && <p className="summary-error">{summaryError}</p>}
+        </div>
+
         {/* Buttons */}
-        <div className="form-group mt-3">
+        <div className="form-actions">
           <Link to="/dashboard" className="button-link lite">
             Cancel
           </Link>

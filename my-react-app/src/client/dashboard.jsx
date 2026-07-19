@@ -5,6 +5,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./public/dashboard.css";
+import { getNoteSummary } from "./noteHelpers";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -79,6 +80,22 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get("http://localhost:5174/auth/status", {
+          withCredentials: true,
+        });
+        if (res.status === 200 && res.data.isAuthenticated) {
+          setUserData(res.data.user);
+        } else {
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error fetching user status:", error);
+        navigate("/");
+      }
+    };
+
     const fetchRecentNotes = async () => {
       try {
         const res = await axios.post(
@@ -88,7 +105,6 @@ function Dashboard() {
         );
 
         if (res.status === 200) {
-          setUserData(res.data.user);
           setNotes(res.data);
           console.log("Recent Notes:", res.data);
         } else {
@@ -97,7 +113,11 @@ function Dashboard() {
         }
       } catch (error) {
         console.error("Error fetching recent notes:", error);
-        alert("Failed to fetch recent notes. Please try again later.");
+        if (error.response?.status === 401) {
+          navigate("/");
+        } else {
+          alert("Failed to fetch recent notes. Please try again later.");
+        }
       }
     };
 
@@ -121,6 +141,7 @@ function Dashboard() {
         alert("Failed to fetch Notes. Please try again later.");
       }
     };
+    fetchUserData();
     fetchRecentNotes();
     fetchAllNotes();
   }, []);
@@ -156,12 +177,9 @@ function Dashboard() {
                   >
                     <div className="card-body">
                       <h5 className="card-title" style={{height:"72px"}}>{note.title}</h5>
+                      <p className="card-language">{note.language}</p>
                       <hr />
-                      <p className="card-text">
-                        {note.codeDetails.length > 200
-                          ? `${note.codeDetails.slice(0, 200)}...`
-                          : note.codeDetails}
-                      </p>
+                      <p className="card-text">{getNoteSummary(note)}</p>
                     </div>
                   </div>
             
@@ -230,7 +248,7 @@ function Dashboard() {
               }
           <hr />
             <li className="button"><button className="button lite" onClick={() => navigate("/Trash")}>trash</button></li>
-            <li className="button"><button className="button lite" >settings</button></li>
+            <li className="button"><button className="button lite" onClick={() => navigate("/settings")}>settings</button></li>
           </ul>
         </div>
       </div>
@@ -265,6 +283,11 @@ function Dashboard() {
               <pre>{selectedNote.code}</pre>
             </div>
             
+            <div className="popup-description">
+              <h4 className="description-heading">Summary:</h4>
+              <p>{getNoteSummary(selectedNote)}</p>
+            </div>
+
             <div className="popup-description">
               <h4 className="description-heading">Code Details:</h4>
               <p>{selectedNote.codeDetails}</p>

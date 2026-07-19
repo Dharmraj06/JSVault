@@ -29,9 +29,10 @@ body {
         align-items: center;
         justify-content: center;
         gap: 120px;
-        height: 406px;
-        width: auto;
-        margin-left: 100px;
+        height: auto;
+        width: 100%;
+        max-width: 1200px;
+        margin: 40px auto;
 }
 
 #WelcomeWords{
@@ -212,4 +213,55 @@ hr{
 
 h1{
          font-weight: bold; 
+}
+
+@media (max-width: 992px) {
+  .loginsection {
+    flex-direction: column;
+    margin-left: 0;
+    gap: 30px;
+    height: auto;
+    padding: 20px;
+  }
+  .login-details {
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+  }
+  .createAccount {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    height: auto;
+    margin-bottom: 40px;
+  }
+}
+
+.button-link.button-danger {
+  color: #d9534f;
+  border-color: #d9534f;
+}
+
+.button-link.button-danger:hover,
+.button-link.button-danger:focus {
+  color: #c9302c;
+  border-color: #c9302c;
+}
+
+.button-link.button-danger::after {
+  background-color: #d9534f;
+}
+
+/* Global Premium Card Styling Override */
+.card {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+  background-color: #ffffff;
+}
+
+.card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
 }

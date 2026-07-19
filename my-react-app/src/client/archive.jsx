@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { getNoteSummary } from "./noteHelpers";
 
 export default function Archive() {
   const [archivedNotes, setArchivedNotes] = useState([]);
@@ -37,27 +38,33 @@ export default function Archive() {
   }
 
   return (
-    <div className="container">
+    <div className="newNote-container">
       <h2>Archived Notes</h2>
       {archivedNotes.length === 0 ? (
         <p>No archived notes available.</p>
       ) : (
-        archivedNotes.map((note) => (
-          <div className="card" style={{ width: "18rem" }} key={note._id}>
-            <div className="card-body">
-              <h5 className="card-title">{note.title}</h5>
-              <p className="card-text">{note.codeDetails}</p>
-              <Link to={`/editNotes/${note._id}`} className="button-link">
-                Edit
-              </Link>
-              <button 
-                onClick={() => handleArchive(note._id)} 
-                className="button lite">
-                Unarchive
-              </button>
+        <div className="notes-grid">
+          {archivedNotes.map((note) => (
+            <div className="card" key={note._id}>
+              <div className="card-body">
+                <h5 className="card-title">{note.title}</h5>
+                <p className="card-language">{note.language}</p>
+                <hr />
+                <p className="card-text">{getNoteSummary(note)}</p>
+                <div className="form-actions mt-3">
+                  <Link to={`/editNotes/${note._id}`} className="button-link">
+                    Edit
+                  </Link>
+                  <button 
+                    onClick={() => handleArchive(note._id)} 
+                    className="button-link lite ml-2">
+                    Unarchive
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );

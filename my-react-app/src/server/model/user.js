@@ -11,11 +11,15 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: false,
+    },
+    googleId: {
+        type: String,
+        required: false,
     }
 },{
     timestamps: true,
 });
 
-const newUser = mongoose.model("newUser", userSchema);
-export default newUser;
+const Users = mongoose.model("newUser", userSchema);
+export default Users;
