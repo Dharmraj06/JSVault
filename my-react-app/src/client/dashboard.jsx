@@ -5,6 +5,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./public/dashboard.css";
+import { getNoteSummary } from "./noteHelpers";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -176,12 +177,9 @@ function Dashboard() {
                   >
                     <div className="card-body">
                       <h5 className="card-title" style={{height:"72px"}}>{note.title}</h5>
+                      <p className="card-language">{note.language}</p>
                       <hr />
-                      <p className="card-text">
-                        {note.codeDetails.length > 200
-                          ? `${note.codeDetails.slice(0, 200)}...`
-                          : note.codeDetails}
-                      </p>
+                      <p className="card-text">{getNoteSummary(note)}</p>
                     </div>
                   </div>
             
@@ -285,6 +283,11 @@ function Dashboard() {
               <pre>{selectedNote.code}</pre>
             </div>
             
+            <div className="popup-description">
+              <h4 className="description-heading">Summary:</h4>
+              <p>{getNoteSummary(selectedNote)}</p>
+            </div>
+
             <div className="popup-description">
               <h4 className="description-heading">Code Details:</h4>
               <p>{selectedNote.codeDetails}</p>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { getNoteSummary } from "./noteHelpers";
 
 export default function Archive() {
   const [archivedNotes, setArchivedNotes] = useState([]);
@@ -47,11 +48,9 @@ export default function Archive() {
             <div className="card" key={note._id}>
               <div className="card-body">
                 <h5 className="card-title">{note.title}</h5>
-                <p className="card-text">
-                  {note.codeDetails.length > 200
-                    ? `${note.codeDetails.slice(0, 200)}...`
-                    : note.codeDetails}
-                </p>
+                <p className="card-language">{note.language}</p>
+                <hr />
+                <p className="card-text">{getNoteSummary(note)}</p>
                 <div className="form-actions mt-3">
                   <Link to={`/editNotes/${note._id}`} className="button-link">
                     Edit

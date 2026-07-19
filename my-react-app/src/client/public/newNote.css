@@ -30,6 +30,12 @@
   flex: 1;
 }
 
+.code-editor-wrapper {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
 
 .form-group {
   display: flex;
@@ -51,6 +57,12 @@
   font-size: 12px;
   color: #666;
   margin-top: 4px;
+}
+
+.summary-error {
+  color: #c0392b;
+  font-size: 13px;
+  margin-top: 8px;
 }
 
 /* Buttons at the end */

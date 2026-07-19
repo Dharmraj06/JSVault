@@ -10,6 +10,7 @@ import LocalStrategy from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+import { GoogleGenAI } from "@google/genai";
 import { fileURLToPath } from "url";
 import path from "path";
 
@@ -208,7 +209,7 @@ app.post("/register", async (req, res, next) => {
 
 app.post("/newNote", ensureauth, async (req, res) => {
   console.log("Received new note request:");
-  const { title, language, tags, code, codeDetails } = req.body;
+  const { title, language, tags, code, codeDetails, summary } = req.body;
 
   if (!title || !language || !tags || !code || !codeDetails) {
     return res.status(400).json({ message: "All fields are required" });
@@ -224,6 +225,7 @@ app.post("/newNote", ensureauth, async (req, res) => {
       isArchived: false,
       code,
       codeDetails,
+      summary: summary || "",
     });
     console.log("Note created:", note);
     res.status(201).json({ message: "Note created successfully", note });
@@ -282,7 +284,7 @@ app.get("/editNotes/:id", ensureauth, async (req, res) => {
 
 app.put("/editNote/:id", ensureauth, async (req, res) => {
   const noteId = req.params.id;
-  const { title, language, tags, code, codeDetails } = req.body;
+  const { title, language, tags, code, codeDetails, summary } = req.body;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(noteId)) {
@@ -297,6 +299,7 @@ app.put("/editNote/:id", ensureauth, async (req, res) => {
         tags,
         code,
         codeDetails,
+        summary: summary || "",
       },
       { new: true },
     );
@@ -493,6 +496,60 @@ app.post("/deleteNote/:id", ensureauth, async (req, res) => {
   } catch (error) {
     console.error("Error deleting note:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post("/api/notes/generate-summary", ensureauth, async (req, res) => {
+  const { title, language, code, description } = req.body;
+
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(503).json({
+      message: "Summary service is not configured. Please add GEMINI_API_KEY to your .env file.",
+    });
+  }
+
+  const prompt = `You are a programming tutor summarizing a developer note.
+
+Write a concise summary in 2 plain sentences for a beginner developer.
+Describe what the code does, important concepts used, and where the snippet is useful.
+Use only the information provided below. Do not invent functionality or missing code.
+Do not mention AI, Gemini, or that this was generated.
+Do not use markdown, bullet points, or lists.
+
+Title: ${title || "Untitled"}
+Language: ${language || "Unknown"}
+Description: ${description || "None provided"}
+Code:
+${code || "No code provided"}`;
+
+  try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const timeoutMs = 30000;
+
+    const generatePromise = ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: prompt,
+    });
+
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Summary request timed out")), timeoutMs);
+    });
+
+    const response = await Promise.race([generatePromise, timeoutPromise]);
+    const summary = response.text?.trim();
+
+    if (!summary) {
+      return res.status(502).json({
+        message: "Could not generate a summary. Please try again or write one manually.",
+      });
+    }
+
+    res.status(200).json({ summary });
+  } catch (error) {
+    console.error("Error generating summary:", error);
+    res.status(500).json({
+      message: "Failed to generate summary. Please try again or write one manually.",
+    });
   }
 });
 

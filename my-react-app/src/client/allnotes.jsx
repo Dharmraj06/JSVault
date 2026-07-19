@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 //import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { getNoteSummary } from "./noteHelpers";
 
 export default function AllNotes() {
   //const navigate = useNavigate();
@@ -93,12 +94,9 @@ const handleArchive = async(noteId) => {
                     <div className="card" key={note._id || i}>
                       <div className="card-body">
                         <h5 className="card-title">{note.title}</h5>
+                        <p className="card-language">{note.language}</p>
                         <hr />
-                        <p className="card-text">
-                          {note.codeDetails.length > 200
-                            ? `${note.codeDetails.slice(0, 200)}...`
-                            : note.codeDetails}
-                        </p>
+                        <p className="card-text">{getNoteSummary(note)}</p>
 
                         <div style={{ marginTop: "10px" }}>
                           <Link

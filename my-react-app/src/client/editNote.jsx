@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LANGUAGES } from "./languages";
+import CodeEditor from "./CodeEditor";
 
 export default function EditNote() {
   const { id } = useParams();
@@ -13,7 +14,10 @@ export default function EditNote() {
     tags: "",
     code: "",
     codeDetails: "",
+    summary: "",
   });
+  const [summaryError, setSummaryError] = useState("");
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   useEffect(() => {
     const fetchNote = async () => {
@@ -35,6 +39,35 @@ export default function EditNote() {
 
     fetchNote();
   }, [id]);
+
+  const handleGenerateSummary = async () => {
+    setSummaryError("");
+    setIsGeneratingSummary(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5174/api/notes/generate-summary",
+        {
+          title: note.title,
+          language: note.language,
+          code: note.code,
+          description: note.codeDetails,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setNote({ ...note, summary: response.data.summary });
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        "Failed to generate summary. Please try again or write one manually.";
+      setSummaryError(message);
+    } finally {
+      setIsGeneratingSummary(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -115,14 +148,11 @@ export default function EditNote() {
           <div className="code-row">
             <div className="form-group">
               <label htmlFor="noteContent">Code</label>
-              <textarea
+              <CodeEditor
                 value={note.code}
-                onChange={(e) => setNote({ ...note, code: e.target.value })}
-                className="form-control"
-                id="noteContent"
-                rows="10"
-                placeholder="Write your code here..."
-              ></textarea>
+                onChange={(value) => setNote({ ...note, code: value })}
+                language={note.language}
+              />
               <p>Write your code snippet here.</p>
             </div>
 
@@ -138,6 +168,28 @@ export default function EditNote() {
               ></textarea>
               <p>Write additional information about your code here.</p>
             </div>
+          </div>
+
+          <div className="form-group newnote-title">
+            <label htmlFor="summary">Summary</label>
+            <textarea
+              id="summary"
+              className="form-control"
+              rows="4"
+              placeholder="Generate a summary or write your own..."
+              value={note.summary || ""}
+              onChange={(e) => setNote({ ...note, summary: e.target.value })}
+            ></textarea>
+            <p>Briefly describe what the code does and where it is useful.</p>
+            <button
+              type="button"
+              className="button lite"
+              onClick={handleGenerateSummary}
+              disabled={isGeneratingSummary}
+            >
+              {isGeneratingSummary ? "Generating..." : "Regenerate Summary"}
+            </button>
+            {summaryError && <p className="summary-error">{summaryError}</p>}
           </div>
 
           {/* Buttons */}

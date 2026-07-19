@@ -44,3 +44,54 @@ export const LANGUAGES = [
   "Objective-C",
   "Visual Basic"
 ];
+
+const MONACO_LANGUAGE_MAP = {
+  JavaScript: "javascript",
+  TypeScript: "typescript",
+  Python: "python",
+  Java: "java",
+  C: "c",
+  "C++": "cpp",
+  "C#": "csharp",
+  Go: "go",
+  Rust: "rust",
+  Kotlin: "kotlin",
+  Swift: "swift",
+  PHP: "php",
+  Ruby: "ruby",
+  Dart: "dart",
+  SQL: "sql",
+  HTML: "html",
+  CSS: "css",
+  SCSS: "scss",
+  JSON: "json",
+  YAML: "yaml",
+  XML: "xml",
+  Bash: "shell",
+  PowerShell: "powershell",
+  Markdown: "markdown",
+  Dockerfile: "dockerfile",
+  "React JSX": "javascript",
+  "React TSX": "typescript",
+  "Node.js": "javascript",
+  Express: "javascript",
+  MongoDB: "javascript",
+  PostgreSQL: "sql",
+  MySQL: "sql",
+  GraphQL: "graphql",
+  Assembly: "plaintext",
+  Lua: "lua",
+  Perl: "perl",
+  R: "r",
+  MATLAB: "plaintext",
+  Scala: "scala",
+  Haskell: "haskell",
+  Elixir: "elixir",
+  Erlang: "erlang",
+  "Objective-C": "objective-c",
+  "Visual Basic": "vb"
+};
+
+export function getMonacoLanguage(language) {
+  return MONACO_LANGUAGE_MAP[language] || "plaintext";
+}
