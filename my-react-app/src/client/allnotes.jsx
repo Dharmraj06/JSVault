@@ -79,7 +79,8 @@ const handleArchive = async(noteId) => {
   }, []);
 
   return (
-    <div className="language-container" style={{ padding: "20px" }}>
+    <div className="newNote-container">
+      <h1>All Notes</h1>
       <ul className="list language" style={{ paddingLeft: 0 }}>
         {alllanguge &&
           Array.from(alllanguge).map((language, idx) => (

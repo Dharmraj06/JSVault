@@ -5,13 +5,19 @@ import dotenv from "dotenv";
 import cors from "cors";
 import Notes from "./model/note.js";
 import passport from "passport";
-import session, { Cookie } from "express-session";
+import session from "express-session";
 import LocalStrategy from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+import { fileURLToPath } from "url";
+import path from "path";
 
-dotenv.config();
+// Resolve the directory of this file so dotenv always finds .env
+// even when nodemon is started from a different working directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 const app = express();
 const port = 5174;
 
@@ -207,7 +213,7 @@ app.post("/newNote", ensureauth, async (req, res) => {
   if (!title || !language || !tags || !code || !codeDetails) {
     return res.status(400).json({ message: "All fields are required" });
   }
-  
+
   try {
     const userID = req.user._id;
     const note = await Notes.create({

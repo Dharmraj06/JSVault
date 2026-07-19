@@ -37,7 +37,7 @@ export default function Archive() {
   }
 
   return (
-    <div className="container">
+    <div className="newNote-container">
       <h2>Archived Notes</h2>
       {archivedNotes.length === 0 ? (
         <p>No archived notes available.</p>
@@ -52,7 +52,7 @@ export default function Archive() {
                     ? `${note.codeDetails.slice(0, 200)}...`
                     : note.codeDetails}
                 </p>
-                <div style={{ marginTop: "10px" }}>
+                <div className="form-actions mt-3">
                   <Link to={`/editNotes/${note._id}`} className="button-link">
                     Edit
                   </Link>

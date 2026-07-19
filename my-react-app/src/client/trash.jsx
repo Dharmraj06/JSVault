@@ -43,7 +43,7 @@ export default function Trash() {
   };
 
   return (
-    <div className="container">
+    <div className="newNote-container">
       <h2>Trash</h2>
       {deletedNotes.length === 0 ? (
         <p>No Deleted Notes Available.</p>
@@ -56,7 +56,7 @@ export default function Trash() {
                 <p className="card-text">{note.codeDetails.length > 200
                         ? `${note.codeDetails.slice(0, 200)}...`
                         : note.codeDetails}</p>
-                <div style={{ marginTop: "10px" }}>
+                <div className="form-actions mt-3">
                   <button onClick={() => handleRestore(note._id)} className="button-link">
                     Restore
                   </button>

@@ -169,7 +169,7 @@
 }
 
 .card-text{
-    height: 14rem;
+    height: auto;
 }
 hr{
     width: 100%;
@@ -179,7 +179,7 @@ hr{
     background-color: #FFCC57 !important;
 }
 
-ul{
+.sidebar ul, .manage-notes-buttons ul{
     list-style-type: none;
     padding-left: 20px;
 }

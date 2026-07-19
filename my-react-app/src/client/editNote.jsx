@@ -141,7 +141,7 @@ export default function EditNote() {
           </div>
 
           {/* Buttons */}
-          <div className="form-group mt-3">
+          <div className="form-actions">
             <Link to="/dashboard" className="button-link lite">
               Cancel
             </Link>

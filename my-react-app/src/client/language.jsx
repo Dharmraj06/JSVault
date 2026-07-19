@@ -81,8 +81,8 @@ export default function LangList() {
     }, [language]); // re-run if param changes
 
     return (
-        <div className="language-container" style={{ padding: "20px" }}>
-            <h2 style={{ textTransform: "uppercase", borderBottom: "2px solid #FFCC57", paddingBottom: "5px", marginBottom: "20px" }}>Notes for: {language}</h2>
+        <div className="newNote-container">
+            <h2>Notes for: {language}</h2>
             <div className="notes-grid">
                 {allnotes.map((note, i) => (
                     <div className="card" key={note._id || i}>
@@ -94,7 +94,7 @@ export default function LangList() {
                                     ? `${note.codeDetails.slice(0, 200)}...`
                                     : note.codeDetails}
                             </p>
-                            <div style={{ marginTop: "10px" }}>
+                            <div className="form-actions mt-3">
                                 <Link to={`/editNotes/${note._id}`} className="button-link">
                                     Edit
                                 </Link>
