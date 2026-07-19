@@ -1,5 +1,5 @@
-import express from 'express';
-const app = express();
+//import express from 'express';
+//const app = express();
 import mongoose from 'mongoose';
 
 export const connectDB = async() => {
