@@ -7,6 +7,7 @@ import Notes from "./model/note.js";
 import passport from "passport";
 import session, { Cookie } from "express-session";
 import LocalStrategy from "passport-local";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
@@ -28,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("/client/public"));
 app.use(
   session({
-    secret: "secrets", //TODO: convert into a .env variable
+    secret: process.env.SESSION_SECRET || "secrets",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -53,6 +54,9 @@ passport.use(
         const user = await Users.findOne({ email: email.trim() });
 
         if (user) {
+          if (!user.password) {
+            return done(null, false, { message: "Account created via Google login. Please login with Google." });
+          }
           const match = await bcrypt.compare(password, user.password);
           if (match) {
             return done(null, user);
@@ -69,6 +73,56 @@ passport.use(
   ),
 );
 
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: "http://localhost:5174/auth/google/callback",
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          const email = profile.emails && profile.emails[0] ? profile.emails[0].value.trim() : null;
+          if (!email) {
+            return done(new Error("No email found in Google profile"));
+          }
+
+          let user = await Users.findOne({
+            $or: [
+              { googleId: profile.id },
+              { email: email }
+            ]
+          });
+
+          if (user) {
+            let updated = false;
+            if (!user.googleId) {
+              user.googleId = profile.id;
+              updated = true;
+            }
+            if (updated) {
+              await user.save();
+            }
+            return done(null, user);
+          } else {
+            user = await Users.create({
+              name: profile.displayName || "Google User",
+              email: email,
+              googleId: profile.id
+            });
+            return done(null, user);
+          }
+        } catch (error) {
+          return done(error);
+        }
+      }
+    )
+  );
+} else {
+  console.warn("Google Client ID/Secret not configured. Google Authentication Strategy is disabled.");
+}
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -79,6 +133,24 @@ passport.deserializeUser(async (id, done) => {
     done(null, user);
   } catch (error) {
     done(error);
+  }
+});
+
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "http://localhost:5173/" }),
+  (req, res) => {
+    res.redirect("http://localhost:5173/dashboard");
+  }
+);
+
+app.get("/auth/status", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.status(200).json({ isAuthenticated: true, user: req.user });
+  } else {
+    res.status(200).json({ isAuthenticated: false });
   }
 });
 
@@ -339,6 +411,53 @@ app.post("/logout", (req, res) => {
     res.clearCookie("connect.sid");
     res.status(200).json({ message: "Logged out successfully" });
   });
+});
+
+app.delete("/deleteAccount", ensureauth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    // 1. Delete all user notes
+    await Notes.deleteMany({ userId });
+    // 2. Delete the user document
+    await Users.findByIdAndDelete(userId);
+    // 3. Log out and clear session cookie
+    req.logout((err) => {
+      if (err) {
+        console.error("Logout error during account deletion:", err);
+        return res.status(500).json({ message: "Logout error during account deletion" });
+      }
+      req.session.destroy();
+      res.clearCookie("connect.sid");
+      res.status(200).json({ message: "Account deleted successfully" });
+    });
+  } catch (error) {
+    console.error("Error during account deletion:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/notes", ensureauth, async (req, res) => {
+  const { search } = req.query;
+  try {
+    const queryConditions = {
+      userId: req.user._id,
+      isTrashed: false,
+    };
+
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      queryConditions.$or = [
+        { title: searchRegex },
+        { tags: searchRegex }
+      ];
+    }
+
+    const notes = await Notes.find(queryConditions).sort({ createdAt: -1 });
+    res.status(200).json(notes);
+  } catch (error) {
+    console.error("Error searching notes:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 app.get("/AllNotes", ensureauth, async (req, res) => {

@@ -79,6 +79,22 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get("http://localhost:5174/auth/status", {
+          withCredentials: true,
+        });
+        if (res.status === 200 && res.data.isAuthenticated) {
+          setUserData(res.data.user);
+        } else {
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error fetching user status:", error);
+        navigate("/");
+      }
+    };
+
     const fetchRecentNotes = async () => {
       try {
         const res = await axios.post(
@@ -88,7 +104,6 @@ function Dashboard() {
         );
 
         if (res.status === 200) {
-          setUserData(res.data.user);
           setNotes(res.data);
           console.log("Recent Notes:", res.data);
         } else {
@@ -97,7 +112,11 @@ function Dashboard() {
         }
       } catch (error) {
         console.error("Error fetching recent notes:", error);
-        alert("Failed to fetch recent notes. Please try again later.");
+        if (error.response?.status === 401) {
+          navigate("/");
+        } else {
+          alert("Failed to fetch recent notes. Please try again later.");
+        }
       }
     };
 
@@ -121,6 +140,7 @@ function Dashboard() {
         alert("Failed to fetch Notes. Please try again later.");
       }
     };
+    fetchUserData();
     fetchRecentNotes();
     fetchAllNotes();
   }, []);
@@ -230,7 +250,7 @@ function Dashboard() {
               }
           <hr />
             <li className="button"><button className="button lite" onClick={() => navigate("/Trash")}>trash</button></li>
-            <li className="button"><button className="button lite" >settings</button></li>
+            <li className="button"><button className="button lite" onClick={() => navigate("/settings")}>settings</button></li>
           </ul>
         </div>
       </div>

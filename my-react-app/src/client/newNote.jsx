@@ -1,10 +1,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LANGUAGES } from "./languages";
 
 export default function NewNote() {
   const [noteTitle, setNoteTitle] = React.useState("");
-  const [languageType, setLanguageType] = React.useState("python");
+  const [languageType, setLanguageType] = React.useState("JavaScript");
   const [tags, setTags] = React.useState("");
   const [code, setCode] = React.useState("");
   const [codeDetails, setCodeDetails] = React.useState("");
@@ -17,7 +18,7 @@ export default function NewNote() {
     const noteData = {
       title: noteTitle,
       language: languageType,
-      tags,
+      tags: tags.split(",").map((t) => t.trim()),
       code,
       codeDetails,
     };
@@ -64,11 +65,11 @@ export default function NewNote() {
               value={languageType}
               onChange={(e) => setLanguageType(e.target.value)}
             >
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="csharp">C#</option>
+              {LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
             </select>
             <p>Select the programming language for your code snippet.</p>
           </div>

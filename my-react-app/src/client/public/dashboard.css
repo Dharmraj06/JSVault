@@ -209,3 +209,80 @@ ul{
   grid-column: 2/3;
   grid-row: 2/3;
 }
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.notes-grid li {
+  list-style: none;
+}
+
+.notes-grid .card {
+  width: 100% !important;
+  max-width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notes-grid .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .dasboard {
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.081);
+    padding: 20px;
+    order: 3;
+    width: 100%;
+  }
+  .recent-notes {
+    width: 100%;
+    padding: 20px 10px;
+  }
+  .recent-notes-list {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    gap: 20px;
+    padding-left: 0;
+  }
+  .recent-notes-list li {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .manage-notes {
+    width: 100%;
+    padding: 20px 10px;
+  }
+  .manage-notes-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-left: 0;
+    gap: 10px;
+  }
+  .manage-notes-buttons li {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .manage-notes-buttons li .button-link {
+    width: 90% !important;
+    text-align: center;
+  }
+}

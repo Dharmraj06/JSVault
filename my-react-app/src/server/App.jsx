@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import Archive from '../client/archive.jsx';
 import Trash from '../client/trash.jsx';
 import LangList from "../client/language.jsx";
+import Settings from "../client/settings.jsx";
 
 function Layout() {
   const location = useLocation();
@@ -31,7 +32,7 @@ function Layout() {
         <Route path="/archivedNotes" element={<Archive />} />
         <Route path="/Trash" element={<Trash />} />
         <Route path="/language/:language" element={<LangList />} />
-      
+        <Route path="/settings" element={<Settings />} />
       </Routes>
 
       <Footer />

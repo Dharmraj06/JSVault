@@ -86,7 +86,7 @@ export default function Login() {
             
 
             <div className="login-btn">
-              <button className="button">Log In with Google</button>
+              <button className="button" onClick={() => window.location.href = "http://localhost:5174/auth/google"}>Log In with Google</button>
               <button className="button" onClick={handlelogin}>
                 Log In
               </button>

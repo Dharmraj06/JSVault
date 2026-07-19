@@ -81,40 +81,40 @@ export default function LangList() {
     }, [language]); // re-run if param changes
 
     return (
-        <div className="language-container">
-            <h2>Notes for: {language}</h2>
-            <ul className="list language">
+        <div className="language-container" style={{ padding: "20px" }}>
+            <h2 style={{ textTransform: "uppercase", borderBottom: "2px solid #FFCC57", paddingBottom: "5px", marginBottom: "20px" }}>Notes for: {language}</h2>
+            <div className="notes-grid">
                 {allnotes.map((note, i) => (
-                    <li key={i}>
-                        <div className="card" style={{ width: "20rem", height: "auto" }}>
-                            <div className="card-body">
-                                <h5 className="card-title">{note.title}</h5>
-                                <hr />
-                                <p className="card-text">
-                                    {note.codeDetails.length > 200
-                                        ? `${note.codeDetails.slice(0, 200)}...`
-                                        : note.codeDetails}
-                                </p>
+                    <div className="card" key={note._id || i}>
+                        <div className="card-body">
+                            <h5 className="card-title">{note.title}</h5>
+                            <hr />
+                            <p className="card-text">
+                                {note.codeDetails.length > 200
+                                    ? `${note.codeDetails.slice(0, 200)}...`
+                                    : note.codeDetails}
+                            </p>
+                            <div style={{ marginTop: "10px" }}>
                                 <Link to={`/editNotes/${note._id}`} className="button-link">
                                     Edit
                                 </Link>
                                 <button
                                     onClick={() => handleDelete(note._id)}
-                                    className="button-link lite"
+                                    className="button-link lite ml-2"
                                 >
                                     Delete
                                 </button>
                                 <button
                                     onClick={() => handleArchive(note._id)}
-                                    className="button-link lite"
+                                    className="button-link lite ml-2"
                                 >
                                     Archive
                                 </button>
                             </div>
                         </div>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 }

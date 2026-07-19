@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LANGUAGES } from "./languages";
 
 export default function EditNote() {
   const { id } = useParams();
@@ -59,80 +60,97 @@ export default function EditNote() {
   };
 
   return (
-    <div className="container">
-      <h1>Edit Your Note</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="noteTitle">Title</label>
-          <input
-            type="text"
-            value={note.title}
-            onChange={(e) => setNote({ ...note, title: e.target.value })}
-            className="form-control"
-            id="noteTitle"
-            placeholder="Enter note title"
-          />
-        </div>
+    <div>
+      <div className="newNote-container">
+        <h1 id="newnote-h1">Edit Your Note</h1>
+        <form onSubmit={handleSubmit}>
+          {/* Title Input */}
+          <div className="form-group newnote-title">
+            <label htmlFor="noteTitle">Title</label>
+            <input
+              type="text"
+              value={note.title}
+              onChange={(e) => setNote({ ...note, title: e.target.value })}
+              className="form-control"
+              id="noteTitle"
+              placeholder="Enter note title"
+            />
+            <p>Enter a title for your note.</p>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="Languagetype">Language</label>
-          <select
-            value={note.language}
-            onChange={(e) => setNote({ ...note, language: e.target.value })}
-            className="form-control"
-            id="Languagetype"
-          >
-            <option value="python">Python</option>
-            <option value="javascript">JavaScript</option>
-            <option value="java">Java</option>
-            <option value="cpp">C++</option>
-            <option value="csharp">C#</option>
-          </select>
-        </div>
+          {/* Language and Tags */}
+          <div className="newnote-type">
+            <div className="form-group">
+              <label htmlFor="Languagetype">Language</label>
+              <select
+                value={note.language}
+                onChange={(e) => setNote({ ...note, language: e.target.value })}
+                className="form-control"
+                id="Languagetype"
+              >
+                {LANGUAGES.map((lang) => (
+                  <option key={lang} value={lang}>
+                    {lang}
+                  </option>
+                ))}
+              </select>
+              <p>Select the programming language for your code snippet.</p>
+            </div>
 
-        <div className="form-group">
-          <label htmlFor="Tag">Tags</label>
-          <input
-            type="text"
-            value={note.tags}
-            onChange={(e) => setNote({ ...note, tags: e.target.value })}
-            className="form-control"
-            id="Tag"
-            placeholder="Enter tags (comma separated)"
-          />
-        </div>
+            <div className="form-group">
+              <label htmlFor="Tag">Tags</label>
+              <input
+                type="text"
+                value={note.tags}
+                onChange={(e) => setNote({ ...note, tags: e.target.value })}
+                className="form-control"
+                id="Tag"
+                placeholder="Enter tags (comma separated)"
+              />
+              <p>Use tags to categorize your notes.</p>
+            </div>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="noteContent">Code</label>
-          <textarea
-            value={note.code}
-            onChange={(e) => setNote({ ...note, code: e.target.value })}
-            className="form-control"
-            id="noteContent"
-            rows="5"
-          ></textarea>
-        </div>
+          {/* Code and Code Details Side by Side */}
+          <div className="code-row">
+            <div className="form-group">
+              <label htmlFor="noteContent">Code</label>
+              <textarea
+                value={note.code}
+                onChange={(e) => setNote({ ...note, code: e.target.value })}
+                className="form-control"
+                id="noteContent"
+                rows="10"
+                placeholder="Write your code here..."
+              ></textarea>
+              <p>Write your code snippet here.</p>
+            </div>
 
-        <div className="form-group">
-          <label htmlFor="noteDetails">Code Details</label>
-          <textarea
-            value={note.codeDetails}
-            onChange={(e) => setNote({ ...note, codeDetails: e.target.value })}
-            className="form-control"
-            id="noteDetails"
-            rows="5"
-          ></textarea>
-        </div>
+            <div className="form-group">
+              <label htmlFor="noteDetails">Code Details</label>
+              <textarea
+                value={note.codeDetails}
+                onChange={(e) => setNote({ ...note, codeDetails: e.target.value })}
+                className="form-control"
+                id="noteDetails"
+                rows="10"
+                placeholder="Write your note here..."
+              ></textarea>
+              <p>Write additional information about your code here.</p>
+            </div>
+          </div>
 
-        <div>
-          <Link to="/dashboard" className="button lite">
-            Cancel
-          </Link>
-          <button type="submit" className="button">
-            Save Note
-          </button>
-        </div>
-      </form>
+          {/* Buttons */}
+          <div className="form-group mt-3">
+            <Link to="/dashboard" className="button-link lite">
+              Cancel
+            </Link>
+            <button type="submit" className="button ml-2">
+              Save Note
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

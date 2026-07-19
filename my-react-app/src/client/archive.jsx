@@ -42,22 +42,30 @@ export default function Archive() {
       {archivedNotes.length === 0 ? (
         <p>No archived notes available.</p>
       ) : (
-        archivedNotes.map((note) => (
-          <div className="card" style={{ width: "18rem" }} key={note._id}>
-            <div className="card-body">
-              <h5 className="card-title">{note.title}</h5>
-              <p className="card-text">{note.codeDetails}</p>
-              <Link to={`/editNotes/${note._id}`} className="button-link">
-                Edit
-              </Link>
-              <button 
-                onClick={() => handleArchive(note._id)} 
-                className="button lite">
-                Unarchive
-              </button>
+        <div className="notes-grid">
+          {archivedNotes.map((note) => (
+            <div className="card" key={note._id}>
+              <div className="card-body">
+                <h5 className="card-title">{note.title}</h5>
+                <p className="card-text">
+                  {note.codeDetails.length > 200
+                    ? `${note.codeDetails.slice(0, 200)}...`
+                    : note.codeDetails}
+                </p>
+                <div style={{ marginTop: "10px" }}>
+                  <Link to={`/editNotes/${note._id}`} className="button-link">
+                    Edit
+                  </Link>
+                  <button 
+                    onClick={() => handleArchive(note._id)} 
+                    className="button-link lite ml-2">
+                    Unarchive
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );

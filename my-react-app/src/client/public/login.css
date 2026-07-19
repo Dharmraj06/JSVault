@@ -213,3 +213,25 @@ hr{
 h1{
          font-weight: bold; 
 }
+
+@media (max-width: 992px) {
+  .loginsection {
+    flex-direction: column;
+    margin-left: 0;
+    gap: 30px;
+    height: auto;
+    padding: 20px;
+  }
+  .login-details {
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+  }
+  .createAccount {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    height: auto;
+    margin-bottom: 40px;
+  }
+}

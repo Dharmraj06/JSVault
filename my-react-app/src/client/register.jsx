@@ -86,7 +86,7 @@ export default function Register() {
             </div>
 
             <div className="login-btn">
-              <button className="button">Sign Up with Google</button>
+              <button className="button" onClick={() => window.location.href = "http://localhost:5174/auth/google"}>Sign Up with Google</button>
               <button className="button" onClick={handleRegister}>
                 Sign Up
               </button>
