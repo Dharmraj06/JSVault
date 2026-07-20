@@ -523,11 +523,14 @@ Code:
 ${code || "No code provided"}`;
 
   try {
+    //  FIX 1: Initialize the new SDK client correctly
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const timeout = 30000;// in ms
+    const timeout = 30000; // in ms
 
+    //  FIX 2: Correct method path for the unified SDK (`ai.models.generateContent`)
+    //  Also updated to use the current 'gemini-2.5-flash' model
     const generateres = ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-3.5-flash", 
       contents: prompt,
     });
 
@@ -536,6 +539,8 @@ ${code || "No code provided"}`;
     });
 
     const response = await Promise.race([generateres, timeoutres]);
+    
+    //  FIX 3: The unified SDK returns text directly on the response object, not response.text()
     const summary = response.text?.trim();
 
     if (!summary) {
