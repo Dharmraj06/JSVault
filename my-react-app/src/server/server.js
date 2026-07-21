@@ -14,8 +14,6 @@ import { GoogleGenAI } from "@google/genai";
 import { fileURLToPath } from "url";
 import path from "path";
 
-// Resolve the directory of this file so dotenv always finds .env
-// even when nodemon is started from a different working directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, "../../.env") });
@@ -425,11 +423,11 @@ app.post("/logout", (req, res) => {
 app.delete("/deleteAccount", ensureauth, async (req, res) => {
   try {
     const userId = req.user._id;
-    // 1. Delete all user notes
+    // delete all user notes
     await Notes.deleteMany({ userId });
-    // 2. Delete the user document
+    // delete the user document
     await Users.findByIdAndDelete(userId);
-    // 3. Log out and clear session cookie
+    // log out and clear session cookie
     req.logout((err) => {
       if (err) {
         console.error("Logout error during account deletion:", err);
@@ -523,12 +521,10 @@ Code:
 ${code || "No code provided"}`;
 
   try {
-    //  FIX 1: Initialize the new SDK client correctly
+   
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const timeout = 30000; // in ms
 
-    //  FIX 2: Correct method path for the unified SDK (`ai.models.generateContent`)
-    //  Also updated to use the current 'gemini-2.5-flash' model
     const generateres = ai.models.generateContent({
       model: "gemini-3.5-flash", 
       contents: prompt,
@@ -540,7 +536,6 @@ ${code || "No code provided"}`;
 
     const response = await Promise.race([generateres, timeoutres]);
     
-    //  FIX 3: The unified SDK returns text directly on the response object, not response.text()
     const summary = response.text?.trim();
 
     if (!summary) {
