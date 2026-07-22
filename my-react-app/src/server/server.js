@@ -7,7 +7,7 @@ import Notes from "./model/note.js";
 import passport from "passport";
 import session from "express-session";
 import LocalStrategy from "passport-local";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as googleStrategy } from "passport-google-oauth20";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { GoogleGenAI } from "@google/genai";
@@ -18,7 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, "../../.env") });
 const app = express();
-const port = 5174;
+const port = process.env.PORT;
 
 connectDB();
 
@@ -32,11 +32,12 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("/client/public"));
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "secrets",
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
       httpOnly: true,
       secure: false,
@@ -60,7 +61,10 @@ passport.use(
 
         if (user) {
           if (!user.password) {
-            return done(null, false, { message: "Account created via Google login. Please login with Google." });
+            return done(null, false, {
+              message:
+                "Account created via google login. please login with google.",
+            });
           }
           const match = await bcrypt.compare(password, user.password);
           if (match) {
@@ -78,55 +82,49 @@ passport.use(
   ),
 );
 
-if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:5174/auth/google/callback",
-      },
-      async (accessToken, refreshToken, profile, done) => {
-        try {
-          const email = profile.emails && profile.emails[0] ? profile.emails[0].value.trim() : null;
-          if (!email) {
-            return done(new Error("No email found in Google profile"));
-          }
+passport.use(
+  new googleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:5174/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const email = profile.emails[0]?profile.emails[0].value:null;
 
-          let user = await Users.findOne({
-            $or: [
-              { googleId: profile.id },
-              { email: email }
-            ]
-          });
-
-          if (user) {
-            let updated = false;
-            if (!user.googleId) {
-              user.googleId = profile.id;
-              updated = true;
-            }
-            if (updated) {
-              await user.save();
-            }
-            return done(null, user);
-          } else {
-            user = await Users.create({
-              name: profile.displayName || "Google User",
-              email: email,
-              googleId: profile.id
-            });
-            return done(null, user);
-          }
-        } catch (error) {
-          return done(error);
+        if (!email) {
+          return done(new Error("No email found in google profile"));
         }
+
+        let user = await Users.findOne({
+          $or: [{ googleId: profile.id }, { email: email }],
+        });
+
+        if (user) {
+          let updated = false;
+          if (!user.googleId) {
+            user.googleId = profile.id;
+            updated = true;
+          }
+          if (updated) {
+            await user.save();
+          }
+          return done(null, user);
+        } else {
+          user = await Users.create({
+            name: profile.displayName,
+            email: email,
+            googleId: profile.id,
+          });
+          return done(null, user);
+        }
+      } catch (error) {
+        return done(error);
       }
-    )
-  );
-} else {
-  console.warn("Google Client ID/Secret not configured. Google Authentication Strategy is disabled.");
-}
+    },
+  ),
+);
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -141,14 +139,18 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+app.get(
+  "/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }),
+);
 
 app.get(
   "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "http://localhost:5173/" }),
+  passport.authenticate("google", {
+    failureRedirect: "http://localhost:5173/",
+  }),
   (req, res) => {
     res.redirect("http://localhost:5173/dashboard");
-  }
+  },
 );
 
 app.get("/auth/status", (req, res) => {
@@ -177,6 +179,7 @@ app.post("/login", passport.authenticate("local"), (req, res) => {
   res.status(200).json({ message: "login successful", user: req.user });
 });
 
+
 app.post("/register", async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
@@ -196,9 +199,8 @@ app.post("/register", async (req, res, next) => {
 
     res.status(201).json({
       message: "registration successful",
-      user
+      user,
     });
-
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -264,13 +266,13 @@ app.get("/editNotes/:id", ensureauth, async (req, res) => {
 
   try {
     if (!mongoose.Types.ObjectId.isValid(noteId)) {
-      return res.status(400).json({ message: "Invalid note ID" });
+      return res.status(400).json({ message: "invalid note ID" });
     }
 
     const note = await Notes.findById(noteId);
 
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      return res.status(404).json({ message: "note not found" });
     }
 
     res.status(200).json(note);
@@ -318,7 +320,7 @@ app.put("/editNote/:id", ensureauth, async (req, res) => {
 });
 
 app.post("/archiveNote/:id", ensureauth, async (req, res) => {
-  console.log("archive request is reached to server");
+  //console.log("archive request is reached to server");
   try {
     const noteId = req.params.id;
     const note = await Notes.findById(noteId);
@@ -335,7 +337,7 @@ app.post("/archiveNote/:id", ensureauth, async (req, res) => {
 });
 
 app.get("/archivedNotes", ensureauth, async (req, res) => {
-  console.log("server se bol raha hun.");
+  //console.log("server se bol raha hun.");
   console.log("user id is:", req.user._id);
   try {
     const userId = req.user._id;
@@ -343,28 +345,36 @@ app.get("/archivedNotes", ensureauth, async (req, res) => {
     if (!archivednotes) {
       console.log("no archived notes");
       res.status(404).json({ message: "No archived notes" });
+
     }
     res.status(200).json(archivednotes);
+
   } catch (error) {
+
     console.log("error in achiving notes", error);
     res.status(500).json({ message: "internal server error" });
+    
   }
 });
 
 app.post("/unarchiveNote/:id", ensureauth, async (req, res) => {
-  console.log("yeh note ab unarchive hogi");
+  //console.log("yeh note ab unarchive hogi");
   try {
     const noteId = req.params.id;
     const note = await Notes.findById(noteId);
     if (!note) {
       console.log("note not found");
     }
+
     note.isArchived = false;
     await note.save();
+
     res.status(200).json({ message: "Note unarchived successfully", note });
   } catch (error) {
+
     console.error("error in unarchiving", error);
     res.status(500).json({ message: "Internal server error" });
+
   }
 });
 
@@ -388,12 +398,15 @@ app.get("/trashedNotes", ensureauth, async (req, res) => {
   try {
     const userId = req.user._id;
     const trashedNotes = await Notes.find({ userId, isTrashed: true });
-    if (!trashedNotes) {
+
+    if (!trashedNotes)  {
+
       console.log("no trashed notes");
-      res.status(404).json({ message: "No trashed notes" });
+      res.status(404).json({ message: "no trashed notes" });
     }
     res.status(200).json(trashedNotes);
   } catch (error) {
+
     console.error("error in trashing notes", error);
     res.status(500).json({ message: "internal server error" });
   }
@@ -403,9 +416,12 @@ app.put("/restoreNote/:id", ensureauth, async (req, res) => {
   const noteId = req.params.id;
   try {
     const note = await Notes.findById(noteId);
-    note.isTrashed = false;
-    await note.save();
-    res.status(200).json({ message: "Note restored successfully", note });
+
+    note.isTrashed = false ;
+    await note.save() ;
+
+    res.status(200).json({ message: "Note restored success", note });
+
   } catch (error) {
     console.error("error in restoring note", error);
     res.status(500).json({ message: "Internal server error" });
@@ -416,6 +432,7 @@ app.post("/logout", (req, res) => {
   req.logout(() => {
     req.session.destroy();
     res.clearCookie("connect.sid");
+
     res.status(200).json({ message: "Logged out successfully" });
   });
 });
@@ -431,8 +448,11 @@ app.delete("/deleteAccount", ensureauth, async (req, res) => {
     req.logout((err) => {
       if (err) {
         console.error("Logout error during account deletion:", err);
-        return res.status(500).json({ message: "Logout error during account deletion" });
+        return res
+          .status(500)
+          .json({ message: "Logout error during account deletion" });
       }
+
       req.session.destroy();
       res.clearCookie("connect.sid");
       res.status(200).json({ message: "Account deleted successfully" });
@@ -453,10 +473,7 @@ app.get("/notes", ensureauth, async (req, res) => {
 
     if (search) {
       const searchRegex = new RegExp(search, "i");
-      queryConditions.$or = [
-        { title: searchRegex },
-        { tags: searchRegex }
-      ];
+      queryConditions.$or = [{ title: searchRegex }, { tags: searchRegex }];
     }
 
     const notes = await Notes.find(queryConditions).sort({ createdAt: -1 });
@@ -475,6 +492,7 @@ app.get("/AllNotes", ensureauth, async (req, res) => {
     }).sort({
       createdAt: -1,
     });
+
     console.log("all notes are as follow ---------", allnotes);
     res.status(200).json(allnotes);
   } catch (error) {
@@ -490,6 +508,7 @@ app.post("/deleteNote/:id", ensureauth, async (req, res) => {
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
     }
+
     res.status(200).json({ message: "Note deleted successfully" });
   } catch (error) {
     console.error("Error deleting note:", error);
@@ -502,7 +521,8 @@ app.post("/api/notes/generate-summary", ensureauth, async (req, res) => {
 
   if (!process.env.GEMINI_API_KEY) {
     return res.status(503).json({
-      message: "Summary service is not configured. Please add GEMINI_API_KEY to your .env file.",
+      message:
+        "Summary service is not configured. Please add GEMINI_API_KEY to your .env file.",
     });
   }
 
@@ -521,12 +541,11 @@ Code:
 ${code || "No code provided"}`;
 
   try {
-   
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const timeout = 30000; // in ms
 
     const generateres = ai.models.generateContent({
-      model: "gemini-3.5-flash", 
+      model: "gemini-3.5-flash",
       contents: prompt,
     });
 
@@ -535,12 +554,13 @@ ${code || "No code provided"}`;
     });
 
     const response = await Promise.race([generateres, timeoutres]);
-    
+
     const summary = response.text?.trim();
 
     if (!summary) {
       return res.status(502).json({
-        message: "Could not generate a summary. Please try again or write one manually.",
+        message:
+          "Could not generate a summary. Please try again or write one manually.",
       });
     }
 
@@ -548,7 +568,8 @@ ${code || "No code provided"}`;
   } catch (error) {
     console.error("Error generating summary:", error);
     res.status(500).json({
-      message: "Failed to generate summary. Please try again or write one manually.",
+      message:
+        "Failed to generate summary. Please try again or write one manually.",
     });
   }
 });
