@@ -79,7 +79,8 @@
 }
 
 /* Consistent premium headings inside page containers */
-.newNote-container h1, .newNote-container h2 {
+.newNote-container > h1,
+.newNote-container > h2 {
   font-weight: bold;
   border-bottom: 2px solid #FFCC57;
   padding-bottom: 10px;

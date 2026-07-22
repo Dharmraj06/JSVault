@@ -3,12 +3,26 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { getNoteSummary } from "./noteHelpers";
+import NotePopup from "./NotePopup";
 
 export default function LangList() {
     const { language } = useParams();
     const [allnotes, setNotes] = useState([]);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [selectedNote, setSelectedNote] = useState(null);
 
-    const handleDelete = async (noteId) => {
+    const handleNoteClick = (note) => {
+        setSelectedNote(note);
+        setIsPopupOpen(true);
+    };
+
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+        setSelectedNote(null);
+    };
+
+    const handleDelete = async (e, noteId) => {
+        e.stopPropagation();
         try {
             const res = await axios.post(
                 `http://localhost:5174/deleteNote/${noteId}`,
@@ -36,7 +50,8 @@ export default function LangList() {
         }
     };
 
-    const handleArchive = async (noteId) => {
+    const handleArchive = async (e, noteId) => {
+        e.stopPropagation();
         try {
             const res = await axios.post(
                 `http://localhost:5174/archiveNote/${noteId}`,
@@ -82,37 +97,51 @@ export default function LangList() {
     }, [language]); // re-run if param changes
 
     return (
+        <>
         <div className="newNote-container">
             <h2>Notes for: {language}</h2>
             <div className="notes-grid">
                 {allnotes.map((note, i) => (
                     <div className="card" key={note._id || i}>
-                        <div className="card-body">
-                            <h5 className="card-title">{note.title}</h5>
-                            <p className="card-language">{note.language}</p>
-                            <hr />
-                            <p className="card-text">{getNoteSummary(note)}</p>
-                            <div className="form-actions mt-3">
-                                <Link to={`/editNotes/${note._id}`} className="button-link">
+                        <div
+                            className="card-clickable-area"
+                            onClick={() => handleNoteClick(note)}
+                        >
+                            <div className="card-body">
+                                <h5 className="card-title">{note.title}</h5>
+                                <p className="card-language">{note.language}</p>
+                                <hr />
+                                <p className="card-text">{getNoteSummary(note)}</p>
+                            </div>
+                        </div>
+                        <div className="card-actions">
+                                <Link
+                                    to={`/editNotes/${note._id}`}
+                                    className="button-link"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
                                     Edit
                                 </Link>
                                 <button
-                                    onClick={() => handleDelete(note._id)}
-                                    className="button-link lite ml-2"
+                                    onClick={(e) => handleDelete(e, note._id)}
+                                    className="button-link lite"
                                 >
                                     Delete
                                 </button>
                                 <button
-                                    onClick={() => handleArchive(note._id)}
-                                    className="button-link lite ml-2"
+                                    onClick={(e) => handleArchive(e, note._id)}
+                                    className="button-link lite"
                                 >
                                     Archive
                                 </button>
-                            </div>
                         </div>
                     </div>
                 ))}
             </div>
         </div>
+            {isPopupOpen && selectedNote && (
+                <NotePopup selectedNote={selectedNote} onClose={handleClosePopup} />
+            )}
+        </>
     );
 }

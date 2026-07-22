@@ -135,6 +135,29 @@ button:after {
 
 }
 
+.navbar-search-wrap {
+  position: relative;
+  width: min(480px, 42vw);
+  min-width: 220px;
+  max-width: 480px;
+  flex: 1 1 280px;
+}
+
+.navbar-search-wrap .input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 991px) {
+  .navbar-search-wrap {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
 .login-btn{
         margin-top: 40px;
         display: flex;

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -6,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./public/dashboard.css";
 import { getNoteSummary } from "./noteHelpers";
+import NotePopup from "./NotePopup";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -144,7 +144,7 @@ function Dashboard() {
     fetchUserData();
     fetchRecentNotes();
     fetchAllNotes();
-  }, []);
+  }, [navigate]);
 
   function openAllNotes() {
     navigate("/AllNotes", {
@@ -255,45 +255,7 @@ function Dashboard() {
       
 
       {isPopupOpen && selectedNote && (
-        <div className="popup-overlay" onClick={handleClosePopup}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            <div className="popup-header">
-              <h2 className="popup-title">{selectedNote.title}</h2>
-              <button className="popup-close-btn" onClick={handleClosePopup}>
-                x
-              </button>
-            </div>
-
-            <div className="popup-details">
-              <div className="detail-item">
-                <span className="detail-label">Language:</span>
-                <span className="detail-value">{selectedNote.language}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Tags:</span>
-                <span className="detail-value">
-                  {selectedNote.tags ? selectedNote.tags.join(", ") : "No tags"}
-                </span>
-              </div>
-            </div>
-
-
-            <div className="popup-code-block">
-              <h4 className="code-heading">Code:</h4>
-              <pre>{selectedNote.code}</pre>
-            </div>
-            
-            <div className="popup-description">
-              <h4 className="description-heading">Summary:</h4>
-              <p>{getNoteSummary(selectedNote)}</p>
-            </div>
-
-            <div className="popup-description">
-              <h4 className="description-heading">Code Details:</h4>
-              <p>{selectedNote.codeDetails}</p>
-            </div>
-          </div>
-        </div>
+        <NotePopup selectedNote={selectedNote} onClose={handleClosePopup} />
       )}
     </>
   );

@@ -143,7 +143,7 @@ export default function Navbar() {
             </ul>
 
             {/* Search bar with live dropdown results */}
-            <div style={{ position: "relative" }}>
+            <div className="navbar-search-wrap">
               <form
                 className="d-flex"
                 role="search"

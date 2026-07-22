@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; 
+import { getNoteSummary } from "./noteHelpers";
+import NotePopup from "./NotePopup";
 
 export default function Trash() {
   const [deletedNotes, setDeleteNotes] = useState([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
+
+  const handleNoteClick = (note) => {
+    setSelectedNote(note);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedNote(null);
+  };
 
   useEffect(() => {
     const fetchDeleteNotes = async () => {
@@ -20,7 +33,8 @@ export default function Trash() {
     fetchDeleteNotes();
   }, []);
 
-    const handleRestore = async(id) => {
+    const handleRestore = async (e, id) => {
+      e.stopPropagation();
       try{
         await axios.put(`http://localhost:5174/restoreNote/${id}`, {}, {
           withCredentials: true,
@@ -31,7 +45,8 @@ export default function Trash() {
       }
     }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
     try {
       await axios.post(`http://localhost:5174/deleteNote/${id}`,{}, {
         withCredentials: true,
@@ -43,6 +58,7 @@ export default function Trash() {
   };
 
   return (
+    <>
     <div className="newNote-container">
       <h2>Trash</h2>
       {deletedNotes.length === 0 ? (
@@ -51,24 +67,37 @@ export default function Trash() {
         <div className="notes-grid">
           {deletedNotes.map((note) => (
             <div className="card" key={note._id}>
-              <div className="card-body">
-                <h5 className="card-title">{note.title}</h5>
-                <p className="card-text">{note.codeDetails.length > 200
-                        ? `${note.codeDetails.slice(0, 200)}...`
-                        : note.codeDetails}</p>
-                <div className="form-actions mt-3">
-                  <button onClick={() => handleRestore(note._id)} className="button-link">
+              <div
+                className="card-clickable-area"
+                onClick={() => handleNoteClick(note)}
+              >
+                <div className="card-body">
+                  <h5 className="card-title">{note.title}</h5>
+                  <p className="card-text">{getNoteSummary(note)}</p>
+                </div>
+              </div>
+              <div className="card-actions">
+                  <button
+                    onClick={(e) => handleRestore(e, note._id)}
+                    className="button-link"
+                  >
                     Restore
                   </button>
-                  <button onClick={() => handleDelete(note._id)} className="button-link lite ml-2">
+                  <button
+                    onClick={(e) => handleDelete(e, note._id)}
+                    className="button-link lite"
+                  >
                     Delete
                   </button>
-                </div>
               </div>
             </div>
           ))}
         </div>
       )}
     </div>
+      {isPopupOpen && selectedNote && (
+        <NotePopup selectedNote={selectedNote} onClose={handleClosePopup} />
+      )}
+    </>
   );
 }

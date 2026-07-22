@@ -3,13 +3,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { getNoteSummary } from "./noteHelpers";
+import NotePopup from "./NotePopup";
 
 export default function AllNotes() {
   //const navigate = useNavigate();
   const [allnotes, setNotes] = useState([]);
   const [alllanguge, setLanguageType] = useState(new Set());
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
 
-    const handleDelete = async (noteId) => {
+  const handleNoteClick = (note) => {
+    setSelectedNote(note);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedNote(null);
+  };
+
+    const handleDelete = async (e, noteId) => {
+    e.stopPropagation();
     try {
       const res = await axios.post(
         `http://localhost:5174/deleteNote/${noteId}`,
@@ -37,7 +51,8 @@ export default function AllNotes() {
   }
 };
 
-const handleArchive = async(noteId) => {
+const handleArchive = async (e, noteId) => {
+    e.stopPropagation();
     try{
       const res = await axios.post(`http://localhost:5174/archiveNote/${noteId}`, {}, {
         withCredentials: true,
@@ -80,6 +95,7 @@ const handleArchive = async(noteId) => {
   }, []);
 
   return (
+    <>
     <div className="newNote-container">
       <h1>All Notes</h1>
       <ul className="list language" style={{ paddingLeft: 0 }}>
@@ -92,32 +108,38 @@ const handleArchive = async(noteId) => {
                   .filter((note) => note.language === language)
                   .map((note, i) => (
                     <div className="card" key={note._id || i}>
-                      <div className="card-body">
-                        <h5 className="card-title">{note.title}</h5>
-                        <p className="card-language">{note.language}</p>
-                        <hr />
-                        <p className="card-text">{getNoteSummary(note)}</p>
+                      <div
+                        className="card-clickable-area"
+                        onClick={() => handleNoteClick(note)}
+                      >
+                        <div className="card-body">
+                          <h5 className="card-title">{note.title}</h5>
+                          <p className="card-language">{note.language}</p>
+                          <hr />
+                          <p className="card-text">{getNoteSummary(note)}</p>
+                        </div>
+                      </div>
 
-                        <div style={{ marginTop: "10px" }}>
+                      <div className="card-actions">
                           <Link
                             to={`/editNotes/${note._id}`}
                             className="button-link"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             Edit
                           </Link>
                           <button
-                            onClick={() => handleDelete(note._id)}
-                            className="button-link lite ml-2"
+                            onClick={(e) => handleDelete(e, note._id)}
+                            className="button-link lite"
                           >
                             Delete
                           </button>
                           <button
-                            onClick={() => handleArchive(note._id)}
-                            className="button-link lite ml-2"
+                            onClick={(e) => handleArchive(e, note._id)}
+                            className="button-link lite"
                           >
                             Archive
                           </button>
-                        </div>
                       </div>
                     </div>
                   ))}
@@ -126,5 +148,9 @@ const handleArchive = async(noteId) => {
           ))}
       </ul>
     </div>
+      {isPopupOpen && selectedNote && (
+        <NotePopup selectedNote={selectedNote} onClose={handleClosePopup} />
+      )}
+    </>
   );
 }

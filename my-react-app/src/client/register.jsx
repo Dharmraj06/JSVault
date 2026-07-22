@@ -44,13 +44,16 @@ export default function Register() {
           <div id="WelcomeWords">
             <h1>Register to The Knowledge Vault</h1>
             <p>
-              Welcome! Please enter your Name, Email and Password to create your account.
+              Welcome! Please enter your Name, Email and Password to create your
+              account.
             </p>
           </div>
 
           <div className="login-details">
             <div id="nameTag">
-              <label htmlFor="name" className="logininputs">Name:</label>
+              <label htmlFor="name" className="logininputs">
+                Name:
+              </label>
               <input
                 type="text"
                 id="name"
@@ -62,7 +65,9 @@ export default function Register() {
             </div>
 
             <div id="emailTag">
-              <label htmlFor="email" className="logininputs">Email Address:</label>
+              <label htmlFor="email" className="logininputs">
+                Email Address:
+              </label>
               <input
                 type="email"
                 id="email"
@@ -74,7 +79,9 @@ export default function Register() {
             </div>
 
             <div id="passwordTag">
-              <label htmlFor="password" className="logininputs">Password:</label>
+              <label htmlFor="password" className="logininputs">
+                Password:
+              </label>
               <input
                 type="password"
                 id="password"
@@ -86,7 +93,14 @@ export default function Register() {
             </div>
 
             <div className="login-btn">
-              <button className="button" onClick={() => window.location.href = "http://localhost:5174/auth/google"}>Sign Up with Google</button>
+              <button
+                className="button"
+                onClick={() =>
+                  (window.location.href = "http://localhost:5174/auth/google")
+                }
+              >
+                Sign Up with Google
+              </button>
               <button className="button" onClick={handleRegister}>
                 Sign Up
               </button>
