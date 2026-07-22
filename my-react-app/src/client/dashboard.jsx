@@ -88,11 +88,11 @@ function Dashboard() {
         if (res.status === 200 && res.data.isAuthenticated) {
           setUserData(res.data.user);
         } else {
-          navigate("/");
+          navigate("/login");
         }
       } catch (error) {
         console.error("Error fetching user status:", error);
-        navigate("/");
+        navigate("/login");
       }
     };
 
@@ -144,7 +144,9 @@ function Dashboard() {
     fetchUserData();
     fetchRecentNotes();
     fetchAllNotes();
+
   }, [navigate]);
+
 
   function openAllNotes() {
     navigate("/AllNotes", {
