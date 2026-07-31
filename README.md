@@ -32,10 +32,9 @@ A full-stack developer note-taking application built using the MERN stack. JSVau
 
 - Search
   - Search notes by title and tags
-  - Live search results
+  - Live search results using DeBounce
 
 - Responsive Design
-  - Mobile-friendly layout
   - Responsive dashboard
   - Consistent UI across pages
 
