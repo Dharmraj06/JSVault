@@ -11,13 +11,11 @@ export default function Navbar() {
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // We keep a reference to the debounce timer so we can clear it
   const debounceTimer = useRef(null);
 
-  // Runs whenever the user types in the search box.
-  // Waits 400ms after the last keystroke before firing the API request.
+  // waits 400ms
   useEffect(() => {
-    // Clear any previous timer so we only fire after the user stops typing
+    // clear prev timer
     clearTimeout(debounceTimer.current);
 
     const query = searchValue.trim();
@@ -48,7 +46,6 @@ export default function Navbar() {
       }
     }, 400);
 
-    // Cleanup: cancel pending timer if searchValue changes again before it fires
     return () => clearTimeout(debounceTimer.current);
   }, [searchValue]);
 
@@ -59,7 +56,7 @@ export default function Navbar() {
   };
 
   const handleSearchBlur = () => {
-    // Short delay so a click on a dropdown item fires before the dropdown hides
+    // Short delay
     setTimeout(() => setShowDropdown(false), 150);
   };
 
@@ -142,7 +139,7 @@ export default function Navbar() {
               </li>
             </ul>
 
-            {/* Search bar with live dropdown results */}
+            {/* search bar with dropdown */}
             <div className="navbar-search-wrap">
               <form
                 className="d-flex"
@@ -177,7 +174,7 @@ export default function Navbar() {
                 )}
               </form>
 
-              {/* Dropdown results list */}
+              {/* result list */}
               {showDropdown && searchResults.length > 0 && (
                 <ul
                   style={{
@@ -242,7 +239,7 @@ export default function Navbar() {
                 </ul>
               )}
 
-              {/* No results message */}
+              {/* no results msg */}
               {showDropdown && searchValue.trim() && searchResults.length === 0 && !isSearching && (
                 <div
                   style={{

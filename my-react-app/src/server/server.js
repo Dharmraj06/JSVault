@@ -562,7 +562,7 @@ ${code || "No code provided"}`;
         message:
           "Could not generate a summary. Please try again or write one manually.",
       });
-    }
+    } 
 
     res.status(200).json({ summary });
   } catch (error) {

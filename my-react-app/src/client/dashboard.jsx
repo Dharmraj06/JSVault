@@ -26,13 +26,13 @@ function Dashboard() {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (res.status === 200) {
         console.log("Note deleted successfully:", res.data);
         setNotes((prevNotes) =>
-          prevNotes.filter((note) => note._id !== noteId)
+          prevNotes.filter((note) => note._id !== noteId),
         );
       }
     } catch (error) {
@@ -54,12 +54,12 @@ function Dashboard() {
         {},
         {
           withCredentials: true,
-        }
+        },
       );
       if (res.status === 200) {
         console.log(`Note archived: ${noteId}`);
         setNotes((prevNotes) =>
-          prevNotes.filter((note) => note._id !== noteId)
+          prevNotes.filter((note) => note._id !== noteId),
         );
       } else {
         console.log("Failed to archive the note.");
@@ -101,7 +101,7 @@ function Dashboard() {
         const res = await axios.post(
           "http://localhost:5174/dashboard",
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         if (res.status === 200) {
@@ -144,16 +144,18 @@ function Dashboard() {
     fetchUserData();
     fetchRecentNotes();
     fetchAllNotes();
-
   }, [navigate]);
-
 
   function openAllNotes() {
     navigate("/AllNotes", {
       state: { user: userData },
     });
   }
-
+  function openArchive() {
+    navigate("/archivedNotes", {
+      state: { user: userData },
+    });
+  }
   function openLanguage(language) {
     navigate(`/language/${language}`, {
       state: { user: userData },
@@ -162,13 +164,12 @@ function Dashboard() {
 
   return (
     <>
-      <div className="dasboard">
+      <div className="dashboard">
         <div className="recent-notes">
           <h1>Recent Notes</h1>
           <ul className="recent-notes-list">
             {recentNotes.map((note, idx) => (
               <li key={note._id || idx}>
-                
                 <div
                   className="card"
                   style={{ width: "20rem", height: "auto" }}
@@ -178,13 +179,15 @@ function Dashboard() {
                     onClick={() => handleNoteClick(note)}
                   >
                     <div className="card-body">
-                      <h5 className="card-title" style={{height:"72px"}}>{note.title}</h5>
+                      <h5 className="card-title" style={{ height: "72px" }}>
+                        {note.title}
+                      </h5>
                       <p className="card-language">{note.language}</p>
                       <hr />
                       <p className="card-text">{getNoteSummary(note)}</p>
                     </div>
                   </div>
-            
+
                   <div className="card-actions">
                     <Link
                       to={`/editNotes/${note._id}`}
@@ -214,26 +217,30 @@ function Dashboard() {
 
         <div className="manage-notes">
           <h1>Manage Notes</h1>
-          <h4>Manage and organize your JavaScript learning notes.</h4>
+          <h4>Manage and organize all of your Notes.</h4>
           <ul className="manage-notes-buttons">
             <li id="newnote">
-              <Link to="/newNote" className="button-link">
-                Create New Note
-              </Link>
-            </li>
-            <li id="allnotes">
-              <Link
-                to="/allnotes"
-                className="button-link lite"
-                onClick={openAllNotes}
+              <button
+                className="button-link"
+                onClick={() => navigate("/newNote")}
               >
-                All Notes
-              </Link>
+                Create New Note
+              </button>
             </li>
+
+            <li id="allnotes">
+              <button className="button-link lite" onClick={openAllNotes}>
+                All Notes
+              </button>
+            </li>
+
             <li id="archive">
-              <Link to="/archivedNotes" className="button-link lite">
+              <button
+                className="button-link lite"
+                onClick={openArchive}
+              >
                 Archive
-              </Link>
+              </button>
             </li>
           </ul>
         </div>
@@ -242,19 +249,39 @@ function Dashboard() {
           <h1> </h1>
           <ul>
             {/* <li className="button">libraries</li> */}
-            
-              {
-                langlist.map(lang => {
-                  return <li className="button lite"><button className="button lite" onClick={() => openLanguage(lang)}>{lang}</button></li>
-                })
-              }
-          <hr />
-            <li className="button"><button className="button lite" onClick={() => navigate("/Trash")}>trash</button></li>
-            <li className="button"><button className="button lite" onClick={() => navigate("/settings")}>settings</button></li>
+
+            {langlist.map((lang) => {
+              return (
+                <li className="button lite">
+                  <button
+                    className="button lite"
+                    onClick={() => openLanguage(lang)}
+                  >
+                    {lang}
+                  </button>
+                </li>
+              );
+            })}
+            <hr />
+            <li className="button">
+              <button
+                className="button lite"
+                onClick={() => navigate("/Trash")}
+              >
+                trash
+              </button>
+            </li>
+            <li className="button">
+              <button
+                className="button lite"
+                onClick={() => navigate("/settings")}
+              >
+                settings
+              </button>
+            </li>
           </ul>
         </div>
       </div>
-      
 
       {isPopupOpen && selectedNote && (
         <NotePopup selectedNote={selectedNote} onClose={handleClosePopup} />
